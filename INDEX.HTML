@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopella</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ff4d6d;--pink2:#ff8fa3;--teal:#06d6a0;--teal2:#40c9b0;
+  --gold:#ffd166;--dark:#1a1a2e;--mid:#16213e;--card:#ffffff;
+  --text:#2d2d44;--sub:#7a7a9d;--bg:#f8f4ff;--border:#ece8f5;
+  --grad:linear-gradient(135deg,#ff4d6d,#ff8fa3);
+  --grad2:linear-gradient(135deg,#06d6a0,#40c9b0);
+  --grad3:linear-gradient(135deg,#ffd166,#ffb347);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ===== SPLASH ===== */
+#splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#1a1a2e,#16213e,#0f3460);position:relative;overflow:hidden;padding:40px 20px}
+#splash::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 30%,rgba(255,77,109,0.25) 0%,transparent 60%),radial-gradient(ellipse at 70% 70%,rgba(6,214,160,0.2) 0%,transparent 60%)}
+.splash-logo{font-family:'Playfair Display',serif;font-size:4.5rem;font-weight:800;color:#fff;letter-spacing:-2px;margin-bottom:10px;position:relative;z-index:1}
+.splash-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.splash-tag{color:rgba(255,255,255,0.6);font-size:1rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:50px;position:relative;z-index:1}
+.splash-carousel{position:relative;z-index:1;width:260px;height:260px;margin-bottom:50px;perspective:900px}
+.sc-inner{width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.9s cubic-bezier(.4,0,.2,1)}
+.sc-inner img{position:absolute;width:100%;height:100%;border-radius:24px;object-fit:cover;border:3px solid rgba(255,255,255,0.15);box-shadow:0 30px 60px rgba(0,0,0,0.5)}
+.sc-inner img:nth-child(1){transform:rotateY(0deg)   translateZ(160px)}
+.sc-inner img:nth-child(2){transform:rotateY(90deg)  translateZ(160px)}
+.sc-inner img:nth-child(3){transform:rotateY(180deg) translateZ(160px)}
+.sc-inner img:nth-child(4){transform:rotateY(270deg) translateZ(160px)}
+.btn-splash{background:var(--grad);color:#fff;border:none;padding:18px 55px;border-radius:50px;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;box-shadow:0 15px 40px rgba(255,77,109,0.4);transition:all .3s;position:relative;z-index:1}
+.btn-splash:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(255,77,109,0.5)}
+
+/* ===== LOGIN ===== */
+#loginPage{display:none;min-height:100vh;background:linear-gradient(145deg,#1a1a2e,#16213e,#0f3460);align-items:center;justify-content:center;padding:20px}
+.login-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:45px 40px;width:100%;max-width:420px}
+.login-box h2{font-family:'Playfair Display',serif;color:#fff;font-size:2rem;text-align:center;margin-bottom:6px}
+.login-box p{color:rgba(255,255,255,0.5);text-align:center;margin-bottom:35px;font-size:0.9rem}
+.finput{width:100%;padding:16px 20px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:16px;color:#fff;font-size:1rem;font-family:'DM Sans',sans-serif;margin-bottom:14px;transition:border-color .2s}
+.finput::placeholder{color:rgba(255,255,255,0.35)}
+.finput:focus{outline:none;border-color:var(--pink)}
+#loginErr{color:#ff8fa3;text-align:center;font-size:0.85rem;margin-bottom:10px;display:none}
+.btn-login{width:100%;background:var(--grad);color:#fff;border:none;padding:17px;border-radius:16px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 10px 30px rgba(255,77,109,0.4);transition:all .3s}
+.btn-login:hover{transform:translateY(-2px)}
+
+/* ===== APP ===== */
+#app{display:none;min-height:100vh;padding-bottom:80px}
+.page{display:none;min-height:calc(100vh - 80px)}
+.page.active{display:block}
+
+/* TOP BAR */
+.topbar{background:#fff;padding:18px 20px 14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.06)}
+.topbar-inner{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+.tb-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--dark)}
+.tb-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tb-right{display:flex;gap:14px;align-items:center}
+.tb-icon{font-size:1.5rem;cursor:pointer;position:relative}
+.tb-badge{position:absolute;top:-6px;right:-6px;background:var(--pink);color:#fff;font-size:0.6rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* SEARCH */
+.search-area{padding:20px 20px 10px;max-width:1200px;margin:auto}
+.search-box{position:relative}
+.search-box input{width:100%;padding:14px 50px 14px 20px;border:2px solid var(--border);border-radius:50px;font-size:1rem;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text);transition:border-color .2s;box-shadow:0 4px 15px rgba(0,0,0,0.05)}
+.search-box input:focus{outline:none;border-color:var(--pink)}
+.search-box .si{position:absolute;right:18px;top:50%;transform:translateY(-50%);font-size:1.2rem}
+
+/* CATEGORY PILLS */
+.cat-pills{display:flex;gap:10px;padding:10px 20px 20px;overflow-x:auto;scrollbar-width:none;max-width:1200px;margin:auto}
+.cat-pills::-webkit-scrollbar{display:none}
+.cat-pill{background:#fff;border:2px solid var(--border);padding:8px 18px;border-radius:50px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--sub);transition:all .25s;flex-shrink:0}
+.cat-pill.active,.cat-pill:hover{background:var(--grad);border-color:transparent;color:#fff}
+
+/* PRODUCT GRID */
+.prods-section{padding:0 20px;max-width:1200px;margin:auto}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--dark);margin-bottom:16px}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:16px;margin-bottom:30px}
+.prod-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.07);cursor:pointer;transition:all .3s;position:relative}
+.prod-card:hover{transform:translateY(-6px);box-shadow:0 15px 40px rgba(0,0,0,0.14)}
+.prod-card img{width:100%;height:160px;object-fit:cover}
+.prod-img-fallback{width:100%;height:160px;background:linear-gradient(135deg,#f0ecff,#ffe4ec);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.prod-info{padding:12px 14px 14px}
+.prod-name{font-weight:600;font-size:0.88rem;color:var(--text);margin-bottom:6px;line-height:1.3}
+.prod-price{color:var(--pink);font-size:1.1rem;font-weight:800}
+.prod-orig{color:var(--sub);font-size:0.78rem;text-decoration:line-through;margin-left:5px}
+.prod-rating{display:flex;align-items:center;gap:4px;margin-top:5px}
+.prod-rating .stars{color:#ffa500;font-size:0.75rem}
+.prod-rating span{color:var(--sub);font-size:0.72rem}
+.heart-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:all .2s;backdrop-filter:blur(5px)}
+.heart-btn.liked{background:var(--pink);color:#fff}
+.heart-btn:hover{transform:scale(1.15)}
+
+/* ===== PRODUCT DETAIL PAGE ===== */
+#pageDetail{display:none;min-height:100vh;background:var(--bg);padding-bottom:100px}
+.detail-header{background:#fff;padding:18px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:14px;box-shadow:0 2px 15px rgba(0,0,0,0.06)}
+.back-arrow{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);background:#fff;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.back-arrow:hover{background:var(--pink);border-color:var(--pink);color:#fff}
+.detail-header h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--dark);flex:1}
+.detail-body{max-width:900px;margin:auto;padding:20px}
+.detail-img-wrap{position:relative;border-radius:24px;overflow:hidden;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,0.12);margin-bottom:24px}
+.detail-img-wrap img{width:100%;height:340px;object-fit:cover}
+.detail-heart{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.95);border:none;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,0.15);transition:all .25s}
+.detail-heart.liked{background:var(--pink);color:#fff}
+.detail-info{background:#fff;border-radius:24px;padding:24px;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+.detail-name{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--dark);margin-bottom:10px}
+.detail-stars{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.detail-stars .s{color:#ffa500;font-size:1.1rem}
+.detail-stars .rc{color:var(--sub);font-size:0.85rem}
+.detail-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.detail-price{font-size:2rem;font-weight:800;color:var(--pink)}
+.detail-orig{color:var(--sub);font-size:1rem;text-decoration:line-through}
+.detail-disc{background:var(--teal);color:#fff;font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:20px}
+.detail-desc{color:var(--sub);font-size:0.92rem;line-height:1.7;margin-top:12px}
+
+/* SIZE selector */
+.size-section{margin-top:16px}
+.size-label{font-weight:600;font-size:0.88rem;color:var(--text);margin-bottom:8px}
+.size-opts{display:flex;gap:8px;flex-wrap:wrap}
+.size-btn{padding:7px 16px;border-radius:10px;border:2px solid var(--border);font-size:0.82rem;font-weight:600;cursor:pointer;color:var(--sub);background:#fff;transition:all .2s}
+.size-btn.sel{border-color:var(--pink);color:var(--pink);background:#fff0f3}
+
+/* Qty */
+.qty-row{display:flex;align-items:center;gap:14px;margin-top:16px}
+.qty-label{font-weight:600;font-size:0.88rem;color:var(--text)}
+.qty-ctrl{display:flex;align-items:center;gap:0;border:2px solid var(--border);border-radius:12px;overflow:hidden}
+.qty-ctrl button{background:#fff;border:none;padding:8px 14px;font-size:1.1rem;cursor:pointer;color:var(--text);transition:background .2s}
+.qty-ctrl button:hover{background:var(--bg)}
+.qty-ctrl span{padding:8px 16px;font-weight:700;font-size:0.95rem;border-left:1px solid var(--border);border-right:1px solid var(--border)}
+
+/* Action btns */
+.action-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.btn-cart{background:#fff;border:2px solid var(--pink);color:var(--pink);padding:16px;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .3s}
+.btn-cart:hover{background:#fff0f3}
+.btn-buy{background:var(--grad);color:#fff;border:none;padding:16px;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 25px rgba(255,77,109,0.35);transition:all .3s}
+.btn-buy:hover{transform:translateY(-2px)}
+
+/* Reviews */
+.reviews-block{background:#fff;border-radius:24px;padding:24px;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+.reviews-block h4{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--dark);margin-bottom:16px}
+.rev-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.rev-item:last-child{border-bottom:none}
+.rev-av{width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;font-weight:700;font-size:0.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rev-name{font-weight:600;font-size:0.88rem;color:var(--dark);margin-bottom:3px}
+.rev-stars{color:#ffa500;font-size:0.8rem}
+.rev-txt{color:var(--sub);font-size:0.85rem;line-height:1.5;margin-top:4px}
+.rev-date{color:#bbb;font-size:0.75rem;margin-top:4px}
+
+/* Similar */
+.similar-block{background:#fff;border-radius:24px;padding:24px;box-shadow:0 4px 18px rgba(0,0,0,0.06)}
+.similar-block h4{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--dark);margin-bottom:16px}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.sim-card{background:var(--bg);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s}
+.sim-card:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+.sim-card img{width:100%;height:110px;object-fit:cover}
+.sim-card .sn{padding:8px;font-size:0.75rem;font-weight:600;color:var(--text)}
+.sim-card .sp{padding:0 8px 8px;font-size:0.85rem;font-weight:800;color:var(--pink)}
+
+/* ===== CATEGORIES PAGE ===== */
+#pageCats .cats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:20px;max-width:900px;margin:auto}
+.cat-tile{border-radius:24px;overflow:hidden;position:relative;height:160px;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.12);transition:all .3s}
+.cat-tile:hover{transform:scale(1.02)}
+.cat-tile img{width:100%;height:100%;object-fit:cover}
+.cat-tile .ct-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65),transparent);display:flex;align-items:flex-end;padding:16px}
+.cat-tile .ct-name{color:#fff;font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700}
+.cat-tile .ct-sub{color:rgba(255,255,255,0.75);font-size:0.8rem;margin-top:2px}
+
+/* ===== ORDERS PAGE ===== */
+.orders-page{padding:20px;max-width:800px;margin:auto}
+.orders-page h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--dark);margin-bottom:20px}
+.order-card{background:#fff;border-radius:20px;overflow:hidden;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,0.07)}
+.order-top{display:flex;gap:14px;padding:18px;align-items:center}
+.order-top img{width:75px;height:75px;object-fit:cover;border-radius:14px;background:#f0ecff;flex-shrink:0}
+.order-det{flex:1}
+.order-det h4{font-weight:700;font-size:0.95rem;color:var(--dark);margin-bottom:4px}
+.order-det .op{color:var(--pink);font-weight:800;font-size:1.1rem}
+.order-det .od{color:var(--sub);font-size:0.8rem;margin-top:3px}
+.order-status-badge{padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;display:inline-block;margin-top:6px}
+.status-processing{background:#fff3cd;color:#856404}
+.status-shipped{background:#d4edda;color:#155724}
+.status-outfordelivery{background:#cce5ff;color:#004085}
+.status-delivered{background:#d4edda;color:#155724}
+.order-tracking{padding:0 18px 18px}
+.track-line{position:relative;padding-left:28px;margin-bottom:0}
+.track-step{display:flex;align-items:flex-start;gap:10px;padding:10px 0;position:relative}
+.track-step::before{content:'';position:absolute;left:-21px;top:22px;width:2px;height:calc(100% - 10px);background:var(--border)}
+.track-step:last-child::before{display:none}
+.ts-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:#fff;position:absolute;left:-28px;top:12px;flex-shrink:0;transition:all .3s}
+.ts-dot.done{background:var(--teal);border-color:var(--teal)}
+.ts-dot.current{background:var(--pink);border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,77,109,0.2)}
+.ts-name{font-weight:600;font-size:0.85rem;color:var(--text)}
+.ts-time{font-size:0.75rem;color:var(--sub);margin-top:2px}
+.cancel-btn{background:linear-gradient(135deg,#ff4d6d,#ff8fa3);color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 5px 15px rgba(255,77,109,0.3);transition:all .25s;flex-shrink:0}
+.cancel-btn:hover{transform:translateY(-2px)}
+.order-actions{padding:0 18px 16px;display:flex;justify-content:flex-end}
+.empty-state{text-align:center;padding:80px 20px;color:var(--sub)}
+.empty-state .ei{font-size:4rem;display:block;margin-bottom:16px}
+.empty-state h3{font-family:'Playfair Display',serif;color:var(--dark);margin-bottom:8px}
+
+/* ===== WISHLIST ===== */
+.wish-page{padding:20px;max-width:1200px;margin:auto}
+.wish-page h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--dark);margin-bottom:20px}
+
+/* ===== PROFILE ===== */
+.profile-page{padding:20px;max-width:600px;margin:auto}
+.profile-hero{background:linear-gradient(145deg,#1a1a2e,#0f3460);border-radius:28px;padding:35px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden}
+.profile-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,77,109,0.3),transparent 60%)}
+.profile-av{width:80px;height:80px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;margin:0 auto 14px;position:relative;z-index:1}
+.profile-hero h3{color:#fff;font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:4px;position:relative;z-index:1}
+.profile-hero p{color:rgba(255,255,255,0.55);font-size:0.85rem;position:relative;z-index:1}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:18px;padding:18px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.06)}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{color:var(--sub);font-size:0.75rem;margin-top:4px}
+.profile-rows{background:#fff;border-radius:20px;padding:8px 20px;box-shadow:0 4px 15px rgba(0,0,0,0.06);margin-bottom:16px}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.prow:last-child{border-bottom:none}
+.prow-l{color:var(--sub);font-size:0.88rem}
+.prow-r{font-weight:700;color:var(--dark);font-size:0.9rem}
+.logout-btn{width:100%;background:var(--grad);color:#fff;border:none;padding:17px;border-radius:50px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 25px rgba(255,77,109,0.35);transition:all .3s}
+.logout-btn:hover{transform:translateY(-2px)}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);display:flex;border-top:1px solid var(--border);backdrop-filter:blur(15px);z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,0.08)}
+.bni{flex:1;padding:10px 5px;text-align:center;cursor:pointer;color:var(--sub);transition:color .2s;font-size:0.72rem;font-weight:500}
+.bni.active{color:var(--pink)}
+.bni .bi{font-size:1.5rem;display:block;margin-bottom:2px}
+
+/* PAYMENT MODAL */
+.pmodal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;backdrop-filter:blur(5px);align-items:flex-end;justify-content:center}
+.pmodal.open{display:flex}
+.pmodal-box{background:#fff;border-radius:28px 28px 0 0;padding:30px 24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.pmodal-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--dark);margin-bottom:6px}
+.pmodal-box .pm-sub{color:var(--sub);font-size:0.85rem;margin-bottom:24px}
+.pm-prod-row{display:flex;gap:14px;align-items:center;background:var(--bg);border-radius:16px;padding:14px;margin-bottom:24px}
+.pm-prod-row img{width:60px;height:60px;object-fit:cover;border-radius:12px;background:#f0ecff}
+.pm-prod-name{font-weight:600;font-size:0.9rem;color:var(--dark)}
+.pm-prod-price{color:var(--pink);font-weight:800;font-size:1.1rem;margin-top:3px}
+.pm-section-title{font-weight:700;font-size:0.88rem;color:var(--dark);margin-bottom:12px;letter-spacing:0.5px;text-transform:uppercase}
+.pm-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.pm-opt{border:2px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;text-align:center;transition:all .25s}
+.pm-opt:hover,.pm-opt.sel{border-color:var(--pink);background:#fff0f3}
+.pm-opt .po-icon{font-size:1.8rem;display:block;margin-bottom:6px}
+.pm-opt .po-name{font-weight:700;font-size:0.88rem;color:var(--dark)}
+.pm-opt .po-sub{color:var(--sub);font-size:0.75rem;margin-top:3px}
+.pm-address{margin-bottom:24px}
+.pm-input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:14px;font-size:0.9rem;font-family:'DM Sans',sans-serif;color:var(--text);margin-bottom:10px;transition:border-color .2s}
+.pm-input:focus{outline:none;border-color:var(--pink)}
+.pm-total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--border);margin-bottom:20px}
+.pm-total-row span{color:var(--sub);font-size:0.9rem}
+.pm-total-row strong{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--pink)}
+.pm-confirm{width:100%;background:var(--grad);color:#fff;border:none;padding:18px;border-radius:50px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 25px rgba(255,77,109,0.35);transition:all .3s}
+.pm-confirm:hover{transform:translateY(-2px)}
+.pm-close{position:absolute;top:20px;right:20px;font-size:1.5rem;cursor:pointer;color:var(--sub)}
+
+/* TOAST */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-90px);background:var(--dark);color:#fff;padding:13px 28px;border-radius:50px;font-size:0.9rem;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,0.3);z-index:99999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* SUCCESS MODAL */
+.success-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99999;align-items:center;justify-content:center}
+.success-modal.open{display:flex}
+.success-box{background:#fff;border-radius:28px;padding:40px 35px;text-align:center;max-width:380px;width:90%;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.success-icon{font-size:4rem;margin-bottom:16px;display:block}
+.success-box h3{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--dark);margin-bottom:8px}
+.success-box p{color:var(--sub);font-size:0.9rem;line-height:1.6;margin-bottom:24px}
+.success-box button{background:var(--grad);color:#fff;border:none;padding:14px 35px;border-radius:50px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 25px rgba(255,77,109,0.35)}
+
+@media(max-width:600px){
+  .splash-logo{font-size:3.2rem}
+  .prod-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  #pageCats .cats-grid{grid-template-columns:1fr 1fr}
+  .detail-img-wrap img{height:260px}
+  .action-btns{grid-template-columns:1fr}
+  .pm-options{grid-template-columns:1fr 1fr}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">Shop<span>ella</span></div>
+  <div class="splash-tag">Fashion & Lifestyle</div>
+  <div class="splash-carousel">
+    <div class="sc-inner" id="scInner">
+      <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&w=400&h=400&fit=crop" alt="Fashion">
+      <img src="https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&w=400&h=400&fit=crop" alt="Style">
+      <img src="https://images.pexels.com/photos/1619651/pexels-photo-1619651.jpeg?auto=compress&w=400&h=400&fit=crop" alt="Watch">
+      <img src="https://images.pexels.com/photos/2220316/pexels-photo-2220316.jpeg?auto=compress&w=400&h=400&fit=crop" alt="Shoes">
+    </div>
+  </div>
+  <button class="btn-splash" onclick="showLogin()">✨ Start Shopping</button>
+</div>
+
+<!-- LOGIN -->
+<div id="loginPage" style="display:none;min-height:100vh;background:linear-gradient(145deg,#1a1a2e,#16213e,#0f3460);display:none;align-items:center;justify-content:center;padding:20px">
+  <div class="login-box">
+    <h2>Welcome Back 👋</h2>
+    <p>Sign in to access your account</p>
+    <input class="finput" id="uname" type="text" placeholder="Username or Phone">
+    <input class="finput" id="upass" type="password" placeholder="Password">
+    <div id="loginErr">Please enter your username and password</div>
+    <button class="btn-login" onclick="doLogin()">🚀 Login & Shop</button>
+    <p style="text-align:center;margin-top:18px;color:rgba(255,255,255,0.4);font-size:0.85rem">New here? Enter any credentials to sign up free!</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="tb-logo">Shop<span>ella</span></div>
+      <div class="tb-right">
+        <div class="tb-icon" onclick="showPage('pageWish',3)">❤️<span class="tb-badge" id="wishBadge" style="display:none">0</span></div>
+        <div class="tb-icon" onclick="showPage('pageOrders',2)">📦<span class="tb-badge" id="orderBadge" style="display:none">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="pageHome" class="page active">
+    <div class="search-area">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search dresses, watches, jewellery..." oninput="searchProds()">
+        <span class="si">🔍</span>
+      </div>
+    </div>
+    <div class="cat-pills" id="catPills">
+      <div class="cat-pill active" onclick="filterCat('all',this)">All</div>
+      <div class="cat-pill" onclick="filterCat('women',this)">👗 Women</div>
+      <div class="cat-pill" onclick="filterCat('men',this)">👔 Men</div>
+      <div class="cat-pill" onclick="filterCat('kids',this)">👶 Kids</div>
+      <div class="cat-pill" onclick="filterCat('home',this)">🏠 Home</div>
+    </div>
+    <div class="prods-section">
+      <div id="homeGrid" class="prod-grid"></div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div id="pageCats" class="page">
+    <div class="cats-grid">
+      <div class="cat-tile" onclick="filterCat('women',null);showPage('pageHome',0)">
+        <img src="https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&w=600&h=400&fit=crop" alt="Women">
+        <div class="ct-overlay"><div><div class="ct-name">Women</div><div class="ct-sub">30 products</div></div></div>
+      </div>
+      <div class="cat-tile" onclick="filterCat('men',null);showPage('pageHome',0)">
+        <img src="https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&w=600&h=400&fit=crop" alt="Men">
+        <div class="ct-overlay"><div><div class="ct-name">Men</div><div class="ct-sub">30 products</div></div></div>
+      </div>
+      <div class="cat-tile" onclick="filterCat('kids',null);showPage('pageHome',0)">
+        <img src="https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&w=600&h=400&fit=crop" alt="Kids">
+        <div class="ct-overlay"><div><div class="ct-name">Kids</div><div class="ct-sub">30 products</div></div></div>
+      </div>
+      <div class="cat-tile" onclick="filterCat('home',null);showPage('pageHome',0)">
+        <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&w=600&h=400&fit=crop" alt="Home">
+        <div class="ct-overlay"><div><div class="ct-name">Home Decor</div><div class="ct-sub">30 products</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="pageOrders" class="page">
+    <div class="orders-page">
+      <h2>📦 My Orders</h2>
+      <div id="orderList"></div>
+    </div>
+  </div>
+
+  <!-- WISHLIST -->
+  <div id="pageWish" class="page">
+    <div class="wish-page">
+      <h2>❤️ My Wishlist</h2>
+      <div class="prod-grid" id="wishGrid"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="pageProfile" class="page">
+    <div class="profile-page">
+      <div class="profile-hero">
+        <div class="profile-av" id="profAv">U</div>
+        <h3 id="profName">User</h3>
+        <p id="profSub">Member since May 2025</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stOrders">0</div><div class="stat-label">Orders</div></div>
+        <div class="stat-card"><div class="stat-num" id="stWish">0</div><div class="stat-label">Wishlist</div></div>
+        <div class="stat-card"><div class="stat-num" id="stSpent">₹0</div><div class="stat-label">Spent</div></div>
+      </div>
+      <div class="profile-rows">
+        <div class="prow"><span class="prow-l">Account</span><span class="prow-r" id="profAcc">-</span></div>
+        <div class="prow"><span class="prow-l">Member Since</span><span class="prow-r">May 2025</span></div>
+        <div class="prow"><span class="prow-l">Delivery Address</span><span class="prow-r">Chennai, Tamil Nadu</span></div>
+        <div class="prow"><span class="prow-l">Preferred Payment</span><span class="prow-r">UPI / COD</span></div>
+      </div>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="bni active" id="nav0" onclick="showPage('pageHome',0)"><span class="bi">🏠</span>Home</div>
+    <div class="bni" id="nav1" onclick="showPage('pageCats',1)"><span class="bi">📂</span>Categories</div>
+    <div class="bni" id="nav2" onclick="showPage('pageOrders',2)"><span class="bi">📦</span>Orders</div>
+    <div class="bni" id="nav3" onclick="showPage('pageWish',3)"><span class="bi">❤️</span>Wishlist</div>
+    <div class="bni" id="nav4" onclick="showPage('pageProfile',4)"><span class="bi">👤</span>Profile</div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL PAGE (full screen) -->
+<div id="pageDetail">
+  <div class="detail-header">
+    <button class="back-arrow" id="detailBack" onclick="closeDetail()">←</button>
+    <h3 id="detailHeaderName">Product</h3>
+    <div style="width:40px"></div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="pmodal" id="payModal">
+  <div class="pmodal-box" style="position:relative">
+    <span class="pm-close" onclick="closePayModal()">✕</span>
+    <h3>Complete Order</h3>
+    <p class="pm-sub">Choose your payment & delivery details</p>
+    <div class="pm-prod-row" id="pmProdRow"></div>
+    <div class="pm-section-title">Payment Method</div>
+    <div class="pm-options">
+      <div class="pm-opt sel" id="pmOnline" onclick="selectPM('online')">
+        <span class="po-icon">💳</span>
+        <div class="po-name">Online</div>
+        <div class="po-sub">UPI / Card / Net Banking</div>
+      </div>
+      <div class="pm-opt" id="pmCOD" onclick="selectPM('cod')">
+        <span class="po-icon">💵</span>
+        <div class="po-name">Cash on Delivery</div>
+        <div class="po-sub">Pay when delivered</div>
+      </div>
+    </div>
+    <div class="pm-section-title">Delivery Address</div>
+    <div class="pm-address">
+      <input class="pm-input" id="pmName" placeholder="Full Name" value="">
+      <input class="pm-input" id="pmPhone" placeholder="Phone Number" value="">
+      <input class="pm-input" id="pmAddr" placeholder="House No, Street, Area" value="123, Anna Nagar">
+      <input class="pm-input" id="pmCity" placeholder="City" value="Chennai">
+      <input class="pm-input" id="pmPin" placeholder="PIN Code" value="600040">
+    </div>
+    <div class="pm-total-row"><span>Total Payable</span><strong id="pmTotal">₹0</strong></div>
+    <button class="pm-confirm" onclick="confirmOrder()">✅ Confirm Order</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-modal" id="successModal">
+  <div class="success-box">
+    <span class="success-icon">🎉</span>
+    <h3>Order Placed!</h3>
+    <p id="successMsg">Your order has been placed successfully. Track it in My Orders!</p>
+    <button onclick="closeSuccess()">View Orders</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== PRODUCTS DATA =====
+const allProducts = [
+  // WOMEN - DRESSES (6)
+  // WOMEN - JEWELLERY (6)
+{id:1,  name:'Gold Plated Choker Set', price:999,  orig:1599, cat:'women', sub:'jewellery', rating:4.6, reviews:210, img:'https://images.openai.com/static-rsc-1/X1CHMbtJLf7jhr1RFnq61I7i26_L3dFjVsgfgmsNeF5Yak9sexJHXY6fEjMP3ahCTkuNxboLVWm2VFm7n0EJnhOeIweN2Zr5CnzgtiffC5XBz_K7N_WPINww6Ea8G9tWkRzpXBA-xyAs_xwcLj1pxu74tt6zDXwfVIUQZVrvHrSlrRxvfSlOLyh17vs13cp5H8CHeDkBFlIsyNLoxSED66nMalwPoCwPI7FGQLUjdzczkTiRdImNlAspEuMp3dlD', desc:'Elegant gold plated choker necklace with matching earrings. Perfect for weddings and festive wear.',},
+{id:2,  name:'Pearl Drop Earrings',    price:499,  orig:899,  cat:'women', sub:'jewellery', rating:4.7, reviews:134, img:'https://images.openai.com/static-rsc-1/fLgV8ySm6CaI1MFCfOgazIqIapRrucqbiDG0f92N1-q6dVvlvX7NwXjN1Wjz0JBN07q7xyCP0-wYHe2JdgYDhZgOHTgTB5qT-iArVCQHLHNm4rn2CCTkHtcjVJ1W7ryZbOPtcCT07ZduN1UKl-NwMhGmjhbk8UnlUwdcBMF0kYpvl0uXvGzYZDphQJ2o1Nmu9R-jYzxmpqEtORMFRrITviz10MbNBDIVnBI-ec84dFw', desc:'Classic pearl drop earrings with a modern touch. Lightweight and suitable for all occasions.',},
+{id:3,  name:'Kundan Bridal Necklace', price:1999, orig:2999, cat:'women', sub:'jewellery', rating:4.8, reviews:95,  img:'https://images.openai.com/thumbnails/url/3Sv_3HicDcnRCoIwFADQL0qpLUshokLEFTWECp8i79bU2JzbJfO1v-xv6rye76dGtD4JQ2nAjRalmGBlSKA83rGBADod-rqztjFq3a_-l2yOIs6gGMRpb7nic_NCsyWM6Pdwg9xV7JId-oLy9jml50yA2rk2XbrIxvmiKptrJMtBj7MH8ylGQOkPwhUvJw', desc:'Traditional Kundan necklace set with detailed craftsmanship. Ideal for bridal and ethnic wear.',},
+{id:4, name:'Oxidised Silver Jhumka', price:699,  orig:1199, cat:'women', sub:'jewellery', rating:4.5, reviews:180, img:'https://images.openai.com/thumbnails/url/Fa5vdHicDcndEoFAGADQJ0rRIM0Ys_4qU6mUcGN2t62EtNun4qG8j7fh3J7vJweoal2WWUnFqwKWSEBKtZfVgOFCe_Rxl-v8UVWXMpvx6f905CYTg4bxMpbsQjjtQZiuCFNnO8gKN-mkhciO5juxvMYn641QGDs5QddEu4gTG8a3Yfumhsus69nvRrwkq9hC-JljH5H9vLD7gYoh5prmKRpSgTSduJ6VOki5SfIfb4E_JQ', desc:'Trendy oxidised silver jhumka earrings with ethnic design. Perfect for casual and festive looks.',},
+{id:5, name:'Rose Gold Bracelet',     price:799,  orig:1399, cat:'women', sub:'jewellery', rating:4.6, reviews:112, img:'https://images.openai.com/thumbnails/url/RmTx43icDclvD0JAHADgTxTjnGRrTf9sEVNUXhmnuWOd435MPlVfp29Tz9vn-6EAQtqq-uSkfwt4lgsoOFIqCTkwopD2pUraCsF4tenW_7OdoFy5JMIhziC2ejnhxGPZiVKkc5nm49ge5_sF9KgzTAjnDq2kd7P82hyLMwoC5rjzdsDYMFK88xOHyURQngKNSe5TtJ-nZXB8HLpocJvhop2vRtEM3hjXmkVacH6syD7Y', desc:'Stylish rose gold bracelet with minimalist design. Great for daily wear and gifting.',},
+{id:6, name:'Diamond Stud Earrings',  price:1499, orig:2499, cat:'women', sub:'jewellery', rating:4.9, reviews:165, img:'https://images.openai.com/thumbnails/url/uOdQVnicDcnbDoIgAADQL8pLzVFtrSmJZWrNNLO3BCa2UAry9lX9Tn9T5_V8P0wpIZe6Tmv8GoSiZKKK2tRKqW6qwhpuuC5ZI0RVl-vn6n9LOyILD8euf9gfRyxIY7Rdceth4N9zPs_4lqb0WgIlmd-aYZg3d_iI2PtwgciICgPGO_fSEwcGGUIO7SwSWrt8GBP3NHghSmUEQIJZBkzOqtg4--5ss035fpoHRSrtH8UBPiE', desc:'Elegant diamond stud earrings with sparkling finish. Timeless design for every occasion.',},
+  // WOMEN - JEWELLERY (6)
+  {id:7,  name:'Gold Necklace Set',      price:2999, orig:4500, cat:'women', sub:'jewel',    rating:4.8, reviews:92, img:'https://images.openai.com/thumbnails/url/evQjtXicDclJDoIwAADAF7EUjQKJMRiQRaxxFy-mFiiUrUqR4m98lr_Ruc73k3HOWlNRkho_B8aTWOL3Gsik5YjnWMZNpbRZw1hek_lj9j_TgrHh4h0NIT6VnPXQE1Gg2i8Az8KCCdFZP1IjiYLIFhed6Ss_db2GEgMJvCzT2KsMDek9KsFmQeHQrZ2g5oXmvBsnvIWH49QdC7Sd0O5ajPbA_wEd_jll', desc:'22K gold-plated necklace set with matching earrings. Delicate floral design.', sizes:['Free']},
+  {id:8,  name:'Pearl Drop Earrings',    price:699,  orig:999,  cat:'women', sub:'jewel',    rating:4.6, reviews:134, img:'https://images.openai.com/thumbnails/url/WJTSjHicDclJDoIwFADQEyE2NSSSGOMAGpsQwYFhQ0qBtqi0wleGQ3kfb6Nv-74fAaBb2zSLmjWDhiI3IKunE94CBckmTD3MViitZc2Xz8X_7JWXz3fsHJELIBj8-OQnmDIAhunLd_iA0kaQNiN7q5fyqPGIrNC93fHmSpK-U6pTQboDikXZcWqgg1pv3dcWN8E4AtKyL8N1kXTw9oLgaMxh0KvGURWf9VFc_QCT1UAh', desc:'Elegant freshwater pearl drop earrings set in sterling silver.', sizes:['Free']},
+  {id:9,  name:'Diamond Pendant',        price:4999, orig:7499, cat:'women', sub:'jewel',    rating:4.9, reviews:56, img:'https://images.openai.com/thumbnails/url/_1UmuXicDclLDoIwFADAEwmiC1ISY6ohxIpo-AobIkULpEILT6TcyuN4G53tfD8VgBgsXb-3tFcC7uUCitbQ2AA3qKlGu6c-VJ0Qdcu2cvM_C3slcmiA0lERmRi7VMzRIQDumy4O-YWNTjTJ6FhImxdiRu075un1tmTlSj6SIG9CpJymZ5nax349da7Kz3QGjOX8YIxgM1xOa5p5fhxARk6rV8JtadjSi3syVmj4AX1FQUY', desc:'Solitaire diamond pendant in white gold. Comes in a gift box.', sizes:['Free']},
+  {id:10, name:'Oxidized Jhumkas',       price:349,  orig:599,  cat:'women', sub:'jewel',    rating:4.5, reviews:289, img:'https://images.openai.com/static-rsc-1/2yWv-sH4ZqFlpup40VlY2VA2NzLIhdKTIVD_Tt7t4pGgjD_8StXbax4FgNfgEhSLcYmKdFNgBwJ92VLYRX2-IK97eQ4xm3v0mAJzGIUrV1S8COee1N8Mv-97hIuddCx-_DOaYnhOgGSasfo6IwoEq45KPxUIYpcLwBFcICgZVSL3DKJ_IampVabC5pHd8bPodmz8XOIo9V7HO54H1ErGE6LDFizKMdhcBf8WSiJviZp2C6cAZFNyHuoc5KuCnYsy', desc:'Traditional oxidized silver jhumka earrings. Perfect with ethnic wear.', sizes:['Free']},
+  {id:11, name:'Kundan Choker',          price:1499, orig:2299, cat:'women', sub:'jewel',    rating:4.7, reviews:67, img:'https://images.openai.com/thumbnails/url/vQUwc3icDcnRCoIwFADQL0olIVSI0CRtSFhLqCeZ21IR59XdGuuxv-xv6rye76dDBB25rlR8sYBSrLBRvtNqZNhzh0-jq7sJoFftbt7-L4pPIsz4NSlir6Qyx-GxBkPum1JhXRWd8RZD_bQGerxlAi0XAcyJeYek0aMgB-bv-esSPGXPzjanQ_UDvYkv8w', desc:'Royal Kundan choker necklace. Embellished with meenakari work.', sizes:['Free']},
+  {id:12, name:'Rose Gold Bracelet',     price:899,  orig:1399, cat:'women', sub:'jewel',    rating:4.4, reviews:112, img:'https://images.openai.com/thumbnails/url/1uhlwnicDcndCoIwGADQJ1IjmKQQEUwWK7O0KLxzc2xK7fcDy8vesrepc3u-HwVgQ54kQnP_tiD6CJhexjJABwOPuXkmQRlrBy03bv2_fHvsM8LrrEJ0SuuGMHzhB-PO9C5HcZpT8pJlYbigLjxW3u5wB6RtiaSeRMWsbs11b1HFRAkTGjEsfrEdL2Y', desc:'Delicate rose gold chain bracelet. Adjustable clasp for perfect fit.', sizes:['Free']},
+  // WOMEN - COSMETICS (6)
+  {id:13, name:'Matte Lipstick Set',     price:599,  orig:899,  cat:'women', sub:'cosmetic', rating:4.6, reviews:445, img:'https://images.openai.com/thumbnails/url/xuJfY3icDclJDoIwFADQE8kUIZTEGARE6hQFhLAxWpChQj-2SvBUXsfb6Nu-76cSArgly0VHHiOIIp-Ia6dIJRcXUROJsFbmFQOou3Lez_5n2bsc-SRCdJG0DfjIG5pYrOmkad9-5R6aZ6D02AOdEIzJyYDskEIerWB5b93E0belZrja8aZWOA6O9nlEno02oTaYqhsBM6jZL4PhNe4ZvTrMyXGRZX3Kp5yGuj6WP5dVPnc', desc:'Set of 6 long-lasting matte lipsticks in bold shades. Transfer-proof formula.', sizes:['Free']},
+  {id:14, name:'Rose Perfume 50ml',      price:1299, orig:1999, cat:'women', sub:'cosmetic', rating:4.7, reviews:234, img:'https://images.openai.com/thumbnails/url/tc4W13icDclLDoIwFADAE_GJlQomxoAY_KJVC4aNgVIFhfosDYq38jjeRmc730-hFDRDw-CCyQ4UzzWVCaRfGpWqkunsXhtNcQcoxWX8GP1v6Ia5E7CdybEW2H6wqkyMZpCZ3Fv46Bh58lm1gBh1E7Gkt9DBJ-nDOiYeyKDjtLJeGsX5Y0tIvxenKqJrSEos9gc77Nzcmp4nm6wmWxLW6eY5l4Df9TW1B7xFSdla8x9qFT4g', desc:'Floral rose eau de parfum. Long-lasting fragrance lasting up to 10 hours.', sizes:['Free']},
+  {id:15, name:'Eyeshadow Palette',      price:799,  orig:1299, cat:'women', sub:'cosmetic', rating:4.5, reviews:312, img:'https://images.pexels.com/photos/2253832/pexels-photo-2253832.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'18-shade eyeshadow palette with matte and shimmer finishes. Highly pigmented.', sizes:['Free']},
+  {id:16, name:'BB Cream SPF30',         price:449,  orig:699,  cat:'women', sub:'cosmetic', rating:4.3, reviews:178, img:'https://images.openai.com/thumbnails/url/IRhUdnicu9mSUVJSUGylr5-al1xUWVCSmqJbkpRnrJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDiwp8wxMynPOdvY3cYk3KDcLtkjzzQ8py9EtCkh0Ns8PdSu2DDN2NK4wNDZ0cvZNd450DoyKD3cvdTVN9Q2KLLYoci91zPB2i0hJKgcA4owutw', desc:'Lightweight BB cream with SPF 30 protection. Gives natural coverage all day.', sizes:['Free']},
+  {id:17, name:'Kajal Eyeliner Duo',     price:199,  orig:299,  cat:'women', sub:'cosmetic', rating:4.8, reviews:678, img:'https://images.openai.com/static-rsc-4/Qd3u1nON8Bh9Fkeui1KVI-chUPxPTS1l0EDk3xcHNpI5D3JmjmCaYS18TToe_7BQBbQDkVmZvn9fs6k_uBGX9uX71BwFtIUcPrsYJYIpCYZE7clTTpNAn2-I7PZt8JIehMZyDb2E1ctFNY5qyUMr_avWkHEH415SY2OaXjQhxiw?purpose=inline', desc:'Waterproof kajal and liquid liner duo. Intensely black for dramatic eyes.', sizes:['Free']},
+  {id:18, name:'Vitamin C Serum',        price:899,  orig:1499, cat:'women', sub:'cosmetic', rating:4.6, reviews:267, img:'https://images.openai.com/thumbnails/url/lXk0T3icDclJDoIwAADAF7FLFBJjxKSAgPVQPXAxLKVFhRZbKPgSv-ZvdK7z_VApufANA_fVa-ES15ose0snQhayrfSKdYagjPO2J7th-z9_f6q9sEJRPlxGi9whnuQKZkA9QVO6Q7hoYtwE0XRGjmPTqQ4OHpmnh53umQluefK207xY0BXOx9HEyEVKaQ1VMEsCL-6Kdt3EgDnqByPvNpM', desc:'Pure 20% Vitamin C serum for glowing skin. Reduces dark spots and pigmentation.', sizes:['Free']},
+  // WOMEN - FOOTWEAR (6)
+  {id:19, name:'Block Heel Sandals',     price:999,  orig:1599, cat:'women', sub:'footwear', rating:4.4, reviews:134, img:'https://images.openai.com/thumbnails/url/pxDYYXicu9mUUVJSUGylr5-al1xUWVCSmqJbkpRnrJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDvEMtXTJSXIs9c_KiErxL_LPyXT0KUtJSy31MjdL9fRw9TR1M3YNKIsKj08qNI6PDPbJyfaPMDKJdMovripId08LcfatyC6Oj_ACAK3jL1Q', desc:'Comfortable block heel sandals in tan leather. Perfect for office and casual wear.', sizes:['5','6','7','8','9']},
+  {id:20, name:'Embroidered Juttis',     price:699,  orig:999,  cat:'women', sub:'footwear', rating:4.7, reviews:223, img:'https://images.openai.com/thumbnails/url/NIXXYXicDclbCoJAFADQFamMGj4gQsuUQjExsX4ixyfkzHi9Wrmo9tNu6vye76dFFKOtKBWj8BZYlRIWjMjNiHfsqEx5r4wtF6JjzWZY_892otLyaborIqxy1-uXm6bNphT3T7CMvUG3TpO7mUhOZegAUYsje94gxGuwkjoILgB67Xs8JgzMC1_Y5CRYR7oBE8nuqs_TM3nAu29fY5lETVBZsx5THJbpcM3bHyAoPuY', desc:'Handcrafted embroidered juttis with mirror work. Ideal for ethnic occasions.', sizes:['5','6','7','8']},
+  {id:21, name:'White Sneakers',         price:1299, orig:1999, cat:'women', sub:'footwear', rating:4.5, reviews:445, img:'https://images.pexels.com/photos/1464625/pexels-photo-1464625.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Classic white leather sneakers with cushioned insole. Goes with everything.', sizes:['5','6','7','8','9']},
+  {id:22, name:'Stiletto Heels',         price:1499, orig:2299, cat:'women', sub:'footwear', rating:4.3, reviews:89, img:'https://images.openai.com/thumbnails/url/XIcBpnicDclJDoIwFADQEwlYSKokxoBhMOCEStkRLMgMhX5lOJXX8Tb6tu_7yQAYV0UxaWg_MUjiBTwaJKQcIsipQNta5FnLWN6k227zP1U7xmuLek4py3waDcXy8UDfVeUFtyKKDc_2sT6CVlbyvNQVIAhHJgr4zrReVxJKScjGvugH964hMqDuvp8L90wcJzvMHZ4S43Hy170dWK096Sep9Gutfl7CFwFTxqv0B7egPv4', desc:'Elegant stiletto heels in patent leather. Perfect for parties and formal events.', sizes:['5','6','7','8']},
+  {id:23, name:'Flat Kolhapuris',        price:499,  orig:799,  cat:'women', sub:'footwear', rating:4.6, reviews:312, img:'https://images.openai.com/thumbnails/url/HBq6u3icDcltCoIwAADQE6m1opYQoVLLiZrmR_VH5hxqoZtuQnWrjtNt6v1930-jlJCmYbCeji-hWKWpsgd6LRVRLdUp7wzZcCHavt4N2_-ZVlBtEI1CxLB0kniWj8Hl6uJxkjWCVeN2cFHBbAWuTAE7KoCIi9s88Lk7hG_POkSrM06TkqDl5MfnPLFgutw79lhg5mqUEK3k9pE3TzXlLLpna3JyuswCEOcIeNJ7_ACJWj14', desc:'Authentic leather Kolhapuri sandals. Comfortable and traditional style.', sizes:['5','6','7','8','9']},
+  {id:24, name:'Ankle Boots',            price:1899, orig:2999, cat:'women', sub:'footwear', rating:4.5, reviews:156, img:'https://images.openai.com/thumbnails/url/FWGI-HicDcnbEkJAAADQLwqFcZlpGmLIolGy8sYyrMsuWTPyVf1Of1Pn9Xw_DWPjrPN8RdDrPbKq3LGC7Ll6ZjnDiEN04OeGjiMm9Wk6_k83wlJzUGwImuSZqrIuzubjrNVWZUlySIBF27ML2QM8EQ0L26XAcw4d1MQoScMOARhvOLLMQl486yJIC1KzDJG0pL6QDu0mxTK1s140b1cyBbAP2tVJc4w3_y6aU_0DaV4-Xw', desc:'Stylish ankle boots in genuine leather. Chunky sole with zipper closure.', sizes:['5','6','7','8']},
+  // WOMEN - BANGLES (6)
+ // WOMEN - BANGLES (Refined)
+{id:25, name:'Glass Bangle Set', price:299, orig:499, cat:'women', sub:'jewellery', rating:4.7, reviews:567, img:'https://images.openai.com/thumbnails/url/c_AWaXicDcnbCoIwAADQL1IzS5cQUUhqoZgtxSfxllu6i24h-iH9W39T5_V8P0hKLmxNa2g1zlw2tSJLqqutkIXElVoxognEOMe0PQz7_9nHsN65VXx7J5SFIH3EwzMFgSEIOi-jczU9b-NLgpCVZRbuHX1aAmtQGAMoIf08crMz8nVJUjyCHuTRpcNQLC5cFRTC6D75cPs6_QDF_zZu', desc:'Set of 12 vibrant glass bangles with golden accents. Lightweight and perfect for traditional wear.', sizes:['2.4','2.6','2.8']},
+
+{id:26, name:'Gold Plated Bangles', price:899, orig:1399, cat:'women', sub:'jewellery', rating:4.6, reviews:189, img:'https://images.openai.com/thumbnails/url/atldvnicDcnRCoIwFADQL0pDqSiIMFwq1dCipnuRdjW1Ule7tuqv-pz-Jt8OnN-3RJRqZpp5A4-3xDwboGgso1B4wgoMaGtTla2UVVMs7vP-Zg7Nph7s7mowYk427vxNEzMgEU0PIReJs3-CayUvVd94rIcMxETE9lJzmtM9BqyCtwzZldengqWurdnRuVhUkYlXrkmi8cNDwECuRPCwdXQGrxcExE9ppzb2tv0DFG8_7Q', desc:'Elegant set of 4 gold-plated kadas with intricate engraving. Anti-tarnish finish for long-lasting shine.', sizes:['2.4','2.6','2.8']},
+
+{id:27, name:'Lac Bangles Set', price:449, orig:749, cat:'women', sub:'jewellery', rating:4.8, reviews:234, img:'https://images.openai.com/thumbnails/url/0KDY5HicDcndCoIwGADQJ0pRZzghYgVaCDPJCrrL-bMZuum-1PUkvVpvU-f2fD8cQOnQtquejUZBVa6g6B2r0fAAwSwmO1tzqZTom-2w-V9IaIljlsPzckR69BrE65Unicj2sx9Mu5pimsfLUDO_IC_nPATdDbnGe2uZCtKmgTEnHVHqpKUCPE94jTMZXQ_uHasETYviZk5a8gMGuTaN', desc:'Handcrafted lac bangles with mirror and stone embellishments. Traditional design in assorted colours.', sizes:['2.4','2.6','2.8']},
+
+{id:28, name:'Silver Kadas', price:1199, orig:1899, cat:'women', sub:'jewellery', rating:4.5, reviews:112, img:'https://images.openai.com/thumbnails/url/x_V6DHicDclJDoIwAADAF8kiQZbEGFFAwlJFI8KFQFlaI6XaqsCvfI6_0bnO94M4p8wUxZrAx0h5Xc14SRShZbzgGAqw70SGekoxaVf35f_MdVQZLoxVawJTuNGqJh_wIPuNEY5nkMfKuHOTyemupIm8RHoUhxMCLujh60jIpL8udiJFOLwX-7JMgY1izp64QdtO1maDHESKms3pgiHLyKST5QS6n5D323n6derph1v_AxXnP08', desc:'Premium sterling silver kadas with engraved motifs. Polished finish for a refined ethnic look.', sizes:['2.4','2.6','2.8']},
+
+{id:29, name:'Diamond Cut Bangles', price:749, orig:1199, cat:'women', sub:'jewellery', rating:4.4, reviews:145, img:'https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Stylish diamond-cut bangles with a shimmering texture. Set of 6 for festive and party wear.', sizes:['2.4','2.6','2.8']},
+
+{id:30, name:'Meenakari Bangles', price:599, orig:999, cat:'women', sub:'jewellery', rating:4.9, reviews:89, img:'https://images.openai.com/thumbnails/url/8rtH3HicDclJDoIwAADAFymCC0tijEACSgTiXi4GWmxRoC0tIL7K7_gbnet8P0RKJixFyWvYDEzmaCSzWh1jIVNZwDGklSIIZayo8Yov_2etQ2R68HjCqXnWjIrNR0k5hBUReHa3efCy8-Zd4KcKEvdyzpxCV1sSczLx-ctzqN5VEAz8ALbGwqkf11syNakoo6jlGuy1ro8jcKVBj_aIpH6aww16rJnbAT8syc7tf_auQHA', desc:'Traditional meenakari bangles featuring vibrant hand-painted enamel work. Crafted by skilled artisans.', sizes:['2.4','2.6','2.8']},
+  // MEN - JEANS (10)
+  // MEN - BOTTOM WEAR (Refined with proper subcategories)
+
+{id:31, name:'Slim Fit Blue Jeans', price:999, orig:1799, cat:'men', sub:'jeans', type:'denim', rating:4.5, reviews:312, img:'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Classic slim fit blue denim jeans with stretch fabric. Comfortable 5-pocket design.', sizes:['28','30','32','34','36']},
+
+{id:32, name:'Black Skinny Jeans', price:1199, orig:1999, cat:'men', sub:'jeans', type:'denim', rating:4.4, reviews:189, img:'https://images.openai.com/thumbnails/url/X9LSE3icDcntDkJQGADgK0L52Blba2VmIiJS_hiHcchB51VxWd1Nd1PP3-f7qQEGpglCSfFjHqAsOMipxFcMMiCYx30nsLofBkKr7bj5n7ZzC9XE_pLnonNipDvSEiW5Z1hksvBlrbrR2YitKK4vnuvtfBTJ8w1znd5YzZtVHprafajoy7GewDSI6Ig3eez291SFe4zSoGjtQH-jdHXNknCmvSHZsrK4oB-ezsvxV88fHoc_Kw', desc:'Edgy black skinny jeans with faded finish. Premium stretch denim for a sleek fit.', sizes:['28','30','32','34','36']},
+
+{id:33, name:'Distressed Jeans', price:1399, orig:2199, cat:'men', sub:'jeans', type:'denim', rating:4.6, reviews:245, img:'https://images.openai.com/thumbnails/url/-gZD83icDclJDoIwFADQExUWEKbEGBBBEEWUgLohQIGS2EH7cTqV1_E2-rbv-yEAQjqq2rH29hLQYQQN05RBQg1jq7ScqpJwIUY2zK-z_znuFtthm5XaQSKRxviK_IVtpc2RE1LgwourB83vtDblkb0TQy9sWsd4wLBrnvmEmUDWppv6KCzpAnhcmf3eX5mGvqzeXpqxgwX-KdOTMDDwNiLkBJNX9sGZRdH-snZ_ss0-nQ', desc:'Trendy distressed jeans with ripped detailing. Tapered fit for modern styling.', sizes:['30','32','34','36']},
+
+{id:34, name:'Chinos Trouser', price:799, orig:1299, cat:'men', sub:'trousers', type:'chinos', rating:4.3, reviews:167, img:'https://images.openai.com/thumbnails/url/6cH7n3icDcnbEkJAAADQL3IbNLNmmqYpJSUVFr0Ya93Crlikv-mz-ps6r-f7KRhre00QUpJ0c8tSzDFERD7vWczKhE9oI_QFbduS5Kvn8n_a-ozBPnGsZry9LEmepfxtRGYOQ2zUsT25G3e6ewcfPBb6JSvsLBIh9SAGu6xSFIRR45cdHU5Y5WSYVuFQe6Op1sY12JLNsZTmjImMIynWAURO0P8AM7Y6Iw', desc:'Versatile cotton chinos in khaki. Ideal for office wear and casual outings.', sizes:['28','30','32','34','36']},
+
+{id:35, name:'Cargo Pants', price:1099, orig:1599, cat:'men', sub:'trousers', type:'cargo', rating:4.5, reviews:198, img:'https://images.openai.com/thumbnails/url/v8esG3icDcnbCoIwAADQL5piBqEQYWaipZWuzL1EOp0znJfNW1_V7_Q3dV7P91MI0XBdljOWdnMjMgxEwhSJcPEUNJXSupJ5UTcNZWTTrv-nGz7W7DRwXTRa5g32EKh7DefxWX0nbV8tSTTkTmhD3nl300LJyoujwC_fVAv6MnFfDzPLDATB6RpPGIkCHrGVk4UxHzTmwE54U1RRjHdKBFBIhwsJLIWFgG8pRmz8Ab8XP34', desc:'Durable cargo pants with multiple utility pockets. Rugged military-inspired design.', sizes:['28','30','32','34','36']},
+
+{id:36, name:'Formal Trousers', price:899, orig:1499, cat:'men', sub:'trousers', type:'formal', rating:4.6, reviews:223, img:'https://images.openai.com/thumbnails/url/_qhGm3icDclJDoIwAADAF7FEZTMxhkUENFWqCHoxWghtWFpoRfFR_sff6Fzn-8FCMD5XlKJF_chEkUvi3qpyycVNECQj2igcU8ZIWy67xf_mNsitNYphVDl0W3lBODFCxyScR90jynYdN0JTTSzJUfPUGxL8AqXP4ebs40s69kA_jsRtYY01qcm0ah3b6jPwBranE321R8D1IKnF1B6OJ_NqrFhx7Z348H7RmQ7DH-LsPRg', desc:'Smart formal trousers with flat front design. Perfect for office and formal events.', sizes:['28','30','32','34','36']},
+
+{id:37, name:'Track Pants', price:699, orig:999, cat:'men', sub:'activewear', type:'trackpants', rating:4.4, reviews:312, img:'https://images.openai.com/thumbnails/url/XkSPhXicDcltCoIwAADQE6mkyyyIMBMpZqlR6v6IbstmOT82kzxV1-k29f6-7-cuZStWmkY57t-tpESRBZ-ppZC5ZFjFTa2Je9O2jJebbv2_lX0kSw9Hy6HL0LDgwGfAbc7N3qqu-smkMtxG9bzOoVWw185Bu4nqPTrbzuVhJAHOnsqC1dd0rCZTR3yA3ht2sT8mLvGFAUJ9vJEpLg5QgNJBMYaOEUhvD5hrpr0iwh-dfT5d', desc:'Breathable dry-fit track pants for workouts. Elastic waistband with drawstring.', sizes:['S','M','L','XL','XXL']},
+
+{id:38, name:'Linen Trousers', price:999, orig:1599, cat:'men', sub:'trousers', type:'linen', rating:4.5, reviews:134, img:'https://images.openai.com/thumbnails/url/OFRiq3icDcnbEkJAAADQL1pKScw0jcuGxJihRr2Y2uQSdu2uwmf1N_1Nndfz_RScE6aJYtYiOhKe3QG_tZKQM37lJRIQbkRWYELKNt92m_9penBXbRTJCkU0vlj1rq4WKSRA2dtntzr4uzYzBq9PZ84rxZO0ShpVCeUmSCYCqXo0_WU82AUIn_38RHPXMj2_eFcRcmAHEr1kdj-awSWKOLWsLllBMsLhgeuYuMzA67T-AQYkP60', desc:'Lightweight linen trousers with relaxed fit. Perfect for summer comfort.', sizes:['28','30','32','34','36']},
+
+{id:39, name:'Denim Shorts', price:699, orig:999, cat:'men', sub:'shorts', type:'denim', rating:4.2, reviews:156, img:'https://images.openai.com/thumbnails/url/Zo0Q5HicDclJDoIwFADQEwkSxAiJMQIyGSUQoEuCLZShDNIfplt5HG-jb_u-nxJg4Joo5h0e1wFysoNXJwmUQwYVFnDfirzsh6Hq6OV9_p92fRLVxkFscFJkPqXZHo53GesmG_O2n5RkV09SEBFzuW36FivMc7gHZkxb5D4i8H0-e47KcgsYirgnr6prhUjBeDyU9tKkBQkNo0nhlEVjE_ulhPAUsD5BemvXbP4BJalAew', desc:'Casual denim shorts with stretch comfort. Ideal for summer outings.', sizes:['28','30','32','34']},
+
+{id:40, name:'Jogger Pants', price:849, orig:1299, cat:'men', sub:'activewear', type:'joggers', rating:4.7, reviews:289, img:'https://images.openai.com/thumbnails/url/PEq6HHicDclJDoIwAADAFyFBQqEkxvRQkRKLyCZeDFvKZi1SRJ_lc_yNznW-n0ZKMdmqWvPy8RayrhRZcH3FJpnLtlyV95s6NXchWs624-Z_NqIVdMoIGJhWoscu7QAY6NCGyXXOF2iYDEkYr_d5G5zTfDdeAPH4wWI0jmrSjKkwTqeOBM_eS5JZcxFB2OCWj5cMIuWIUleDxUCe5BX6cj5mlkJ0MYCHHtwOJnXYD5CUPVM', desc:'Comfortable cotton joggers with ribbed cuffs. Perfect for lounging or workouts.', sizes:['S','M','L','XL','XXL']},
+  // MEN - T-SHIRTS (10)
+  // MEN - TOP WEAR (Refined)
+
+{id:41, name:'Graphic Tee', price:449, orig:699, cat:'men', sub:'tshirt', type:'graphic', rating:4.5, reviews:445, img:'https://images.pexels.com/photos/1656684/pexels-photo-1656684.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Bold graphic print t-shirt in 100% cotton. Crew neck with a comfortable regular fit.', sizes:['S','M','L','XL','XXL']},
+
+{id:42, name:'Polo T-Shirt', price:599, orig:899, cat:'men', sub:'tshirt', type:'polo', rating:4.6, reviews:312, img:'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Classic polo t-shirt in breathable pique cotton. Smart casual essential.', sizes:['S','M','L','XL','XXL']},
+
+{id:43, name:'Linen Casual Shirt', price:799, orig:1299, cat:'men', sub:'shirt', type:'casual', rating:4.7, reviews:198, img:'https://images.pexels.com/photos/297933/pexels-photo-297933.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Lightweight linen shirt with relaxed fit. Ideal for summer outings.', sizes:['S','M','L','XL','XXL']},
+
+{id:44, name:'Striped Henley', price:499, orig:799, cat:'men', sub:'tshirt', type:'henley', rating:4.4, reviews:234, img:'https://images.openai.com/thumbnails/url/9s2gE3icDcndCoIwGADQJzKzH51ChCuaolPUDOwmajYtbJvto7Kn6nV6mzq35_tpAZT2TPMs2H1QcK4NOInpqNFwhAsbMXkzdSuVuohm2S_-5_lJ7RKWheAEDZM5ToaHEBbdupt6k7akaqxjxPUEa9T7mO-rkNloXUalceDXsBvznOKkS9Pnfr5ay6zdcQTj0HYc4vQEFZyCPYtpRSUiNHjTq1BFtAL8ioOIW5n_A1KLPN4', desc:'Striped henley t-shirt with button placket. Soft cotton fabric for all-day wear.', sizes:['S','M','L','XL']},
+
+{id:45, name:'Oversized Streetwear Tee', price:699, orig:1099, cat:'men', sub:'tshirt', type:'oversized', rating:4.8, reviews:567, img:'https://images.pexels.com/photos/4066293/pexels-photo-4066293.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Trendy oversized t-shirt with drop shoulders. Streetwear-inspired design.', sizes:['S','M','L','XL','XXL']},
+
+{id:46, name:'Formal Dress Shirt', price:899, orig:1499, cat:'men', sub:'shirt', type:'formal', rating:4.5, reviews:167, img:'https://images.pexels.com/photos/1103828/pexels-photo-1103828.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Crisp formal shirt with slim fit and spread collar. Perfect for office wear.', sizes:['S','M','L','XL','XXL']},
+
+{id:47, name:'Dri-Fit Gym Tee', price:399, orig:599, cat:'men', sub:'tshirt', type:'sports', rating:4.6, reviews:389, img:'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Quick-dry performance t-shirt with moisture-wicking fabric. Ideal for workouts.', sizes:['S','M','L','XL','XXL']},
+
+{id:48, name:'Printed Kurta', price:699, orig:999, cat:'men', sub:'ethnic', type:'kurta', rating:4.4, reviews:223, img:'https://images.openai.com/thumbnails/url/SWwc0HicDcnhEkIwAADgJ5LkUrnrOqqb5SKi0h-XEY1mZpo8Va_T29T39_t-Cs5pq8tyRhB7U56lEk-IOspbfuMPNEL1U26LmtIHyVfN8n-64aQLgAIyU5WpxbqQ5qLGx2uo2DBncQF3aixJx2aeKiU1X5euhINnI2297s8Howo0f-uI2t2ofGDs3Voe4CKZ7IexO2dJ2NuNDVGEQUV84QTR_Q5x3EsCoOKE07Fp_AC78z-H', desc:'Traditional printed kurta with band collar. Comfortable cotton for festive wear.', sizes:['S','M','L','XL','XXL']},
+
+{id:49, name:'Half Sleeve Hoodie', price:999, orig:1499, cat:'men', sub:'hoodie', type:'casual', rating:4.3, reviews:145, img:'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Stylish half-sleeve hoodie with front pocket. Perfect for layering.', sizes:['S','M','L','XL','XXL']},
+
+{id:50, name:'Plain V-Neck Tee', price:299, orig:499, cat:'men', sub:'tshirt', type:'basic', rating:4.5, reviews:612, img:'https://images.openai.com/thumbnails/url/7diXnHicDcndEoFAGADQJ6qI0WjGGBUasfSrujFZqVWtar9-n8rreBvO7fl-UoCSyYIQU1wPJcQPDu50xicMIiCYx-9CYOm7LAlN1tXqf_IGPZZ7bNmOPt1d82YMlRsSaXXvx-Okktxu0KH1wNrqOUIxlzuqUt96c1AcJcsYe6KZFPpFpk0PppiLRsPO2t4LXolOOvcUURZXNbYDSaVqTaDnTpwx8a1xfom6ViML8wf0Iz_B', desc:'Essential plain v-neck t-shirt in soft cotton. Ideal for everyday wear.', sizes:['S','M','L','XL','XXL']},
+  {id:51, name:'Classic Analog Watch',   price:3999, orig:5999, cat:'men', sub:'watch',   rating:4.8, reviews:267, img:'https://images.pexels.com/photos/1619651/pexels-photo-1619651.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Timeless stainless steel analog watch. Sapphire crystal glass with leather strap.', sizes:['Free']},
+  {id:52, name:'Smart Fitness Watch',    price:5999, orig:8999, cat:'men', sub:'watch',   rating:4.7, reviews:445, img:'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Feature-packed smartwatch with health monitoring. 7-day battery life.', sizes:['Free']},
+  {id:53, name:'Chronograph Watch',      price:6999, orig:9999, cat:'men', sub:'watch',   rating:4.9, reviews:134, img:'https://images.pexels.com/photos/1927259/pexels-photo-1927259.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Professional chronograph with tachymeter bezel. Water-resistant to 100m.', sizes:['Free']},
+  {id:54, name:'Pilot Aviator Watch',    price:4499, orig:6999, cat:'men', sub:'watch',   rating:4.6, reviews:89, img:'https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Aviation-inspired watch with large Arabic numerals. Anti-glare sapphire crystal.', sizes:['Free']},
+  {id:55, name:'Minimalist Watch',       price:2999, orig:4499, cat:'men', sub:'watch',   rating:4.5, reviews:312, img:'https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Ultra-slim minimalist watch with clean dial. Interchangeable nato strap.', sizes:['Free']},
+  {id:56, name:'Dive Watch',             price:5499, orig:7999, cat:'men', sub:'watch',   rating:4.7, reviews:198, img:'https://images.pexels.com/photos/1034063/pexels-photo-1034063.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Professional dive watch with 200m water resistance. Luminescent hands.', sizes:['Free']},
+  {id:57, name:'Skeleton Mechanical',    price:8999, orig:12999,cat:'men', sub:'watch',   rating:4.8, reviews:67, img:'https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Open-heart mechanical skeleton watch. Visible movement through sapphire glass.', sizes:['Free']},
+  {id:58, name:'Digital Sports Watch',   price:1999, orig:2999, cat:'men', sub:'watch',   rating:4.4, reviews:389, img:'https://images.pexels.com/photos/1682821/pexels-photo-1682821.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Rugged digital sports watch with backlight. Alarm, stopwatch and timer.', sizes:['Free']},
+  {id:59, name:'Rose Gold Dress Watch',  price:3499, orig:4999, cat:'men', sub:'watch',   rating:4.6, reviews:156, img:'https://images.pexels.com/photos/2783873/pexels-photo-2783873.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Elegant rose gold dress watch with mesh bracelet. For formal occasions.', sizes:['Free']},
+  {id:60, name:'Military Field Watch',   price:2499, orig:3999, cat:'men', sub:'watch',   rating:4.5, reviews:223, img:'https://images.pexels.com/photos/1034063/pexels-photo-1034063.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Rugged military-style field watch with canvas strap. Anti-shock movement.', sizes:['Free']},
+
+  // KIDS - DRESSES (10)
+  // KIDS - CLOTHING (Refined)
+
+{id:61, name:'Cartoon Print Dress', price:449, orig:699, cat:'kids', sub:'dress', type:'casual', rating:4.6, reviews:234, img:'https://images.openai.com/thumbnails/url/NQRrinicu9mUUVJSUGylr5-al1xUWVCSmqJbkpRnoJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDixyMdY18jbytHBNSy9xdPOvdPMMyY4ozUpOTymvNHTNynEv9zZJjwxxtqjMzUiMrzJxMgj1NfAwyM5yzMlNTC7Orkr093C2MAsCAJAHLp0', desc:'Adorable cartoon print frock for girls. Soft cotton fabric for all-day comfort.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:62, name:'Party Wear Frock', price:799, orig:1299, cat:'kids', sub:'dress', type:'party', rating:4.7, reviews:156, img:'https://images.openai.com/thumbnails/url/ReOT1nicDcnxDkJAHADgJxKTLLbWZKeSme6WxT_GEU7O4bfCU_U6vU19_37fTwUgRlOWC06HWUCRS5BxdVWOkEJNV7Rr5bHqhKh5ue93_zMtPzeOlCBFRyzKsnIOUs_YRpJLkqC7AXJjAUSKguWebJCuH2L7mG-BCDvCXk_VGSkXu-L8zSYjhOaJnbMTh-2Vacx-rbVkstpOCfXmpAxQFAJT4ufxY8EMP5yAWz9xXj6g', desc:'Elegant net frock with bow detailing. Perfect for birthdays and special occasions.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:63, name:'Boys Shirt & Shorts Set', price:549, orig:849, cat:'kids', sub:'set', type:'casual', rating:4.5, reviews:189, img:'https://images.openai.com/thumbnails/url/T5Xr5nicu9mUUVJSUGylr5-al1xUWVCSmqJbkpRnoJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDkxyS_Ys96jyd83yCzY38Sn38s_wSC8wKsjw8NRN9a7yCfKJT_EJcwp2zjFJMivyKcj2N48qKijKLDJLdw8z0g01DUox9_E0yzEGAJ3eLjY', desc:'Stylish shirt and shorts combo for boys. Lightweight and easy to wear.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:64, name:'Ethnic Kurta Set', price:699, orig:999, cat:'kids', sub:'ethnic', type:'kurta-set', rating:4.8, reviews:112, img:'https://images.openai.com/thumbnails/url/yq8kHXicDclRCoIwAADQE6Vm4lwQsSKMCEvaZvojtolb4TbdkrpU9-k29X7f9yOcM3bp-61i49u4ls_cTS28zrrGSeYx3ftWaGOk6tbD6n9LlHGYMnxuE2wRn3IeDVhSVnTunT5Ixua1nXKyBdxMRXq4gympKJZPBBKMQVD0VyXLfHuR84bETVfpWr_2RxrSE4wH6ITeiZfKU3kMxk1GyzB-9OUdQBLtEOE_UxE96Q', desc:'Festive kurta-pyjama set with traditional prints. Ideal for celebrations.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:65, name:'Denim Jacket + Tee', price:999, orig:1499, cat:'kids', sub:'outerwear', type:'jacket-set', rating:4.6, reviews:167, img:'https://images.openai.com/thumbnails/url/k135aHicu9mUUVJSUGylr5-al1xUWVCSmqJbkpRnpJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDi5y8zF0S43KTs0M083IrQwt8EiKjEjOTfHOMwjKqUorMnQv9vTOcQrLSSvIKQgx8C8rTS51D_bOdTfIdjSJyslxCTYMzapwrnAFANQGL-8', desc:'Trendy denim jacket paired with a comfy tee. Perfect for layering.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:66, name:'Lehenga Choli Set', price:1299, orig:1999, cat:'kids', sub:'ethnic', type:'lehenga', rating:4.9, reviews:89, img:'https://images.openai.com/thumbnails/url/_ELLWXicDclJDoIwAADAF7EkhjUxBmSTHdGg3KBAi0JboCHic_yVv9G5zveDGKOLLggtBvNGWdtwrMYiDxdWsR7wgIzCggilPYaHaf8_3YgbzQXnK1JOpIy8GObhu8SG5K8RGL3Lpg0YFqvmb2fLDGzVAU6WRV2SqNSdoho9RPseW3SXmaLMVXMph20hpXEn37ji9RwAChwlJwDTXhuO1pbSHyfAOTs', desc:'Beautiful lehenga choli with embroidery and mirror work. Festive ready.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:67, name:'party frock', price:399, orig:599, cat:'kids', sub:'babywear', type:'romper', rating:4.5, reviews:312, img:'https://images.openai.com/thumbnails/url/BkjZxHicDclJDoIwAADAFwEJlDUxhgZBkbBJULlhWYoiFFpl-Y3P8jc61_l-MGOEGoJQdmhcCCsLjt06ka8py1mDeNQ_BYp7Qpqu3g6b_xmmX-gOigsq1xDHAKku0RbrrZhSevfbNOJApEyOA2dfHiGE4RIy0z41l3y-lhrbVYm-JMDyMiyjo1uZ_eyFymFtJSsAUmajlzjthzV4nAeusKlKf8ydOKM', desc:'Soft cotton romper for babies with snap buttons. Easy and comfortable.', sizes:['0-6M','6-12M','1-2Y']},
+
+{id:68, name:'Superhero Hoodie', price:699, orig:999, cat:'kids', sub:'outerwear', type:'hoodie', rating:4.7, reviews:234, img:'https://images.openai.com/thumbnails/url/4LdBT3icDcltEoFAAADQE_VJW8wYUyKKhgzFH7PtptLUbnaV7VSu4za8v-_7KTinbKooWYOegvIMSzxtVDlnHPISyYjUCisIpWWTz9vZ_6Z2iCceikLr8haxsUxDZ0RbHGOGJDgwzT6IekjAmnT5hgG1PJ43g5FINxckOtodjUGsIVx6XdBXpbu9O5f--sQLa7Ia-6SlfWW-NDcCUGxTcPLrvRm8Ij3mzcMnXWon-Q-1bj8J', desc:'Fun superhero-themed hoodie with cozy fleece lining. Kids love it!', sizes:['3-4Y','5-6Y','7-8Y','9-10Y']},
+
+{id:69, name:'Summer Sundress', price:499, orig:799, cat:'kids', sub:'dress', type:'summer', rating:4.4, reviews:145, img:'https://images.openai.com/thumbnails/url/JjDpX3icDclJDoIwAADAFwFSQgQSY1jEJYhAIAEvxgKyFdrSVuVXfsff6Fzn-2k5J8xSlHoq54XwupI4nFS5YfzOu1Iu8aiwFhPSTc2Wbv5n2WFl7svYY5yuoRQ4t-KAUxUMIIFkiEWfItGgfnJGTOE7rI2VaV6D7DKEDPoNy0Q1G75n75beDf08ekCURGwpPKyfaGBGkCCWg1y4tKuPWpe00B04eKIz1vQCFK8f7cw_1Q', desc:'Lightweight sundress with floral prints. Perfect for warm days.', sizes:['1-2Y','3-4Y','5-6Y','7-8Y']},
+
+{id:70, name:'School Uniform Set', price:849, orig:1299, cat:'kids', sub:'uniform', type:'school', rating:4.6, reviews:267, img:'https://images.openai.com/thumbnails/url/GmbZKHicu5mZUVJSUGylr5-al1xUWVCSmqJbkpRnpJdeXJJYkpmsl5yfq1-ckV9QkJmXbl9oC5SzcvRLsXRPDnLxckrSNTQwcfJy96sMzTIyTvSpKHEqrHI0rnQpCir3KXUOrvT2T3dxSU3zKCwsjQQAT2smMw', desc:'Durable and comfortable school uniform set for daily wear.', sizes:['3-4Y','5-6Y','7-8Y','9-10Y']},
+  // KIDS - HEADWEAR (Refined)
+
+{id:71, name:'Baseball Cap Kids', price:249, orig:399, cat:'kids', sub:'headwear', type:'cap', rating:4.5, reviews:189, img:'https://images.openai.com/thumbnails/url/w225fXicDcltCoIwAADQE02RVpQQUZpmoBVEtV-R-3Kg29ymqQfpbt2m3t_3_VTOaRv6PpXYjNpRAlwpA49b93ICe1g1vq2U1kLyTbv-X7gtyCrFl_7BYBbFEyniZz_C81CwuXwfUbpDpYD42qVBRkXOl8ni0JSXvUNTDesbwXxGOTLK8DYBd06w7AxgOp-CEyDMtpHS_fADyTM3Tg', desc:'Classic baseball cap with adjustable strap. Lightweight and breathable for daily wear.', sizes:['48-50cm','50-52cm','52-54cm']},
+
+{id:72, name:'Cartoon Sun Hat', price:199, orig:299, cat:'kids', sub:'headwear', type:'sunhat', rating:4.6, reviews:156, img:'https://images.openai.com/thumbnails/url/mDn11XicDclJDoIwAADAFwECMQKJMZq4QEC2iMKF1FqgCKW1ZfNVfsff6Fzn-6mEoNxSFETga6YCPSRxJ7pccgEEhjLsWoVXHaWYlBu2_p-1PT_MI4x6Phn3V-GTNF8ANZ2l8I0PzKuAR-0GAMmuAh8TDQ-DW8eBe9mqdm00GotVs9cYIn1bnGIu1GTMSj1aTNeczFmwMnfo5iyP_rkpWj0DQ9sZ4ZMk9emw78XojD_5ZUAF', desc:'Wide-brim sun hat with fun cartoon prints. Perfect for outdoor play and beach days.', sizes:['48-50cm','50-52cm']},
+
+{id:73, name:'Woolen Beanie', price:299, orig:449, cat:'kids', sub:'headwear', type:'beanie', rating:4.7, reviews:112, img:'https://images.pexels.com/photos/45982/pexels-photo-45982.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Soft woolen beanie with pompom. Keeps kids warm during winter.', sizes:['1-3Y','4-6Y','7-9Y']},
+
+{id:74, name:'Snapback Cap', price:349, orig:499, cat:'kids', sub:'headwear', type:'cap', rating:4.4, reviews:89, img:'https://images.pexels.com/photos/1124465/pexels-photo-1124465.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Trendy snapback cap with embroidered logo. Adjustable fit for growing kids.', sizes:['50-52cm','52-54cm']},
+
+{id:75, name:'Astronaut  Hat', price:449, orig:699, cat:'kids', sub:'headwear', type:'novelty', rating:4.8, reviews:67, img:'https://images.openai.com/thumbnails/url/dy8GX3icDcnbCoIwAADQL_ISQqYQUYhakuhMtF5kznWZOjedmvuqfqe_qfN6vp-nEGywNQ1T1C9M4EoRJdXVxyCgeCEVda02PDvGXvSx49v_2fuwsjyUjOe8BvM6xg3NxuYmjYhgPkMY5i6XxCnlxu2JGSnyulglqk4LsLK0HZL7MS2kMjWkMmoC33pXcHZxzMJ7A-b6B5DxyXGWft_VG3EZV3mI08AHNFFg4CIU_wBZ2UDY', desc:'Fun astronaut-themed helmet hat. Perfect for imaginative play.', sizes:['50-52cm','52-54cm']},
+
+{id:76, name:'Trucker Cap', price:279, orig:399, cat:'kids', sub:'headwear', type:'cap', rating:4.3, reviews:134, img:'https://images.openai.com/thumbnails/url/p2vz1nicDclXDoIwAADQEykjgkBiTIOKRkGGsn4IwwLGDmzDOpXX8Tb6ft_303BOmSEID1y-J8of1YIXWF7WjOe8LZclQQJrCKUtrrfd5n8GcCrdKm_r4fk6KRpMpxkGsnIO9Au0MnDo4Sg6p75AZiTZ6jqbfTKGwGpYdcxXYuJlEm5qG7kd28utQt1icmAGZFG7vnJb9L20MIkKonh3T5DJnj5QtIEn9ExJHEr74QeC6z4r', desc:'Mesh trucker cap with breathable back panel. Ideal for sunny days.', sizes:['50-52cm','52-54cm','54-56cm']},
+
+{id:77, name:'Princess Tiara Headband', price:399, orig:599, cat:'kids', sub:'headwear', type:'accessory', rating:4.7, reviews:178, img:'https://images.openai.com/thumbnails/url/x-7iuXicDcltCoIwAADQE6lIK5sQIZpLlIVWKvsTOj-m4pxuJd2kq3Wben_f98OUEtI2jJrT5S1UXWmq5KbeSlWojup0Gg3JJiE63h7nw_9sB1cQ0YSMrhp8Ug5E2y7R5Fns_txUa4kd0NNwC5nX5K9rAoaozTCIAmwmOVyZk_PH5UR27jkjDUf7II37YDKt3kcIzOGtlqlXQCv-AfJpNTU', desc:'Sparkling princess tiara headband. Perfect for parties and dress-up.', sizes:['Free']},
+
+{id:78, name:'Rain Hat Waterproof', price:349, orig:499, cat:'kids', sub:'headwear', type:'rainhat', rating:4.5, reviews:145, img:'https://images.openai.com/thumbnails/url/vtADcnicDclJDoIwFADQEyGiiRYTYwwg4IBxguKGyNxYamk_Fi7lfbyNvu37fmoALhe6XrBMDByKXIOUGaNKwgNINspejS7rF-eEVat2-b_FOshNN7ue4mlzQue6vQeeYR-o4kN_PLxttC2xo0QAXrtRMcdxOtzDCHvW3jhTGI_ZTAVmtJNtot2YiIkUXU_VkzySrWuZtBIFVomH3o4_Ca-pP0e8QWW3I0K79OYPdno_UQ', desc:'Waterproof rain hat with chin strap. Keeps kids dry in rainy weather.', sizes:['48-50cm','50-52cm','52-54cm']},
+
+{id:79, name:'Animal Ear Headband', price:199, orig:299, cat:'kids', sub:'headwear', type:'accessory', rating:4.6, reviews:234, img:'https://images.openai.com/static-rsc-4/TeactB48yEIb6h6rBnm4eefCKc6aA6zvXX3Gv3cd7mM3KFJIse3ktqeHWiajAVp4fmWG1SIgn90F-0iWtzd3RHO-tXw5Qu0I8xEpMVr6lsIO3j4_jEEJZvKe-PKtA4H6TW5MwL4rJ9SccIVpQ6kQFhmmD0iAfiYvF0UMvkHEtjlq3SbpCNQDEkiuEtgLkjXq?purpose=inline', desc:'Cute plush animal ear headband in fun styles. Soft and comfortable.', sizes:['Free']},
+
+{id:80, name:'Cricket Hat', price:299, orig:449, cat:'kids', sub:'headwear', type:'sports', rating:4.4, reviews:112, img:'https://images.pexels.com/photos/3621104/pexels-photo-3621104.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Classic wide-brim cricket hat with UV protection. Great for outdoor sports.', sizes:['50-52cm','52-54cm','54-56cm']},
+  // KIDS - FOOTWEAR (10)
+  // KIDS - FOOTWEAR (Refined)
+
+{id:81, name:'LED Light Sneakers', price:699, orig:999, cat:'kids', sub:'footwear', type:'sneakers', rating:4.8, reviews:456, img:'https://images.openai.com/thumbnails/url/OAGpM3icDcltCoIwAADQE6WtlFSIkLBMZVCszF8jp04J99GmNk_S1bpNvb_v-2m1Fiqw7ZqRlxG6rha6ZMCiSj90RyzCe1u1XIiO0Z3c_i8IYeUfCUJjjGfuuEMBWyccTAMwI6jAex8awMfJlHkJV885u_XMd9NUGpTNp-iQ5GkREzRdog1cSkWHaZq95I7l-g1UdYaNR4m-0h9OnDfF', desc:'Fun LED light-up sneakers with USB charging. Multiple color modes kids love.', sizes:['20','22','24','26','28','30']},
+
+{id:82, name:'Velcro School Shoes', price:549, orig:799, cat:'kids', sub:'footwear', type:'school', rating:4.6, reviews:312, img:'https://images.openai.com/thumbnails/url/VZ3wHnicDcndCoIwGADQJzKjFv1AhJLaj2iJWXYjOmsO26bbRzqfqtfpbercnu-nAmjUyjQfHEvdwKM0oOCTEVGQA8UjLJipKtE0lJNNu_7fygrKpYfPUGJp-6nnV-FwQfejcXJ3ubt1GJcx6VGEZU4jOe8cIXoSqAUP9atjs7SSA8_Y_g2snhbaqktdW3GGEIX2cpi1iUoTw99f6wMKxVHEFtXjvt_az-BWIGGQHyt5QJ4', desc:'Durable black school shoes with velcro straps. Comfortable for daily wear.', sizes:['22','24','26','28','30','32']},
+
+{id:83, name:'Rain Boots Kids', price:799, orig:1199, cat:'kids', sub:'footwear', type:'boots', rating:4.7, reviews:189, img:'https://images.openai.com/thumbnails/url/YURcnnicDcn_DkJAAADgJ_I7ObbWlFzKjGSqf5q4O0wcd4zH6nF6m_r-_b6fknPKLElCbT4slKNC4K9WFQnjGa9yMe_eEis7SquWbPvN_yw7KEyYR8RMhj5MVG6MGLkeSJ4yANrUy3uo1WhWzJTHzRg7LnW8oIGdr2oGfPg2vofPBkdhuY6neM_0cqwBdFjk46ReHid6TYk73uFxJywKLsgqmMPL7bxUKIuA7suHH5zcPf0', desc:'Waterproof rain boots with fun prints. Easy pull-on design for kids.', sizes:['20','22','24','26','28','30']},
+
+{id:84, name:'Summer Sandals', price:399, orig:599, cat:'kids', sub:'footwear', type:'sandals', rating:4.5, reviews:234, img:'https://images.openai.com/thumbnails/url/COy8_3icDcnbEkJAAADQL1qXMgYzTUMtzU5Miqa8scSSvbCUz-mz-ps6r-f7aaTko6OqFcXDwmVVAlnQlVKPMpcEK5j16tgwzgmtt2LzP8eNSjvAiXmVvXvKL3MDuh1ckA9QbxGJNPrMphAKNmhZkdpdzklMw3c0-bHOvO6QEPP8atsZZOIYMHeAwo_gPoTW_YYobkE3DUUar0PTMB66x_APLbU5jg', desc:'Comfortable open-toe sandals with anti-slip sole. Perfect for summer.', sizes:['20','22','24','26','28']},
+
+{id:85, name:'Sports Running Shoes', price:899, orig:1399, cat:'kids', sub:'footwear', type:'sports', rating:4.6, reviews:267, img:'https://images.openai.com/thumbnails/url/zHUXMnicDclJDoIwAADAF7FLWBJj0CgKpEq0Ct5qCxSQUqBB5FH-x9_oXOf7oULwwVWUjOH-zUVGJPFgqlwMAokSy7htlIG2nJesWHXL_7keII6Pz0ZCa2ah-sK47ZDQV1OgFY35HEFuJ9GsV7TPuUEiw_MgDAkYzSMa4wBqYbxe3G8ona5dQPaFzqojTevsBU11Z_Ktt5nqs0RR7CSnh8rD2QKHzZQZTY9h_wMEiT2Q', desc:'Lightweight running shoes with breathable mesh and cushiohttps://images.openai.com/thumbnails/url/VZ3wHnicDcndCoIwGADQJzKjFv1AhJLaj2iJWXYjOmsO26bbRzqfqtfpbercnu-nAmjUyjQfHEvdwKM0oOCTEVGQA8UjLJipKtE0lJNNu_7fygrKpYfPUGJp-6nnV-FwQfejcXJ3ubt1GJcx6VGEZU4jOe8cIXoSqAUP9atjs7SSA8_Y_g2snhbaqktdW3GGEIX2cpi1iUoTw99f6wMKxVHEFtXjvt_az-BWIGGQHyt5QJ4ned sole.', sizes:['24','26','28','30','32','34']},
+
+{id:86, name:'Princess Ballet Flats', price:499, orig:749, cat:'kids', sub:'footwear', type:'flats', rating:4.7, reviews:145, img:'https://images.openai.com/thumbnails/url/SS7YZ3icDclJDoIwFADQEzGkZdLEGKVBAgYDyoIVgZYApVCQjwOn8jreRt_2fT8NwDhvNa0a6P09QsUUKAek1jMU0FKVyl6bGzmO7VDvp93_toeIbU70FuroOUxGF0LA9QST8PJqeC8cHKxGLPCZEIMx_3hzUddhUtaEcNfUaRzZZLaQJzL7uSgprPB-LFNi8ZakuXQjaoUd7h2Jr49Sf7m5KVvbW7PMFxxFQRH_AEPHPY0', desc:'Elegant glittery ballet flats with bow detail. Soft cushioned insole.', sizes:['20','22','24','26','28']},
+
+{id:87, name:'Clog Sandals', price:449, orig:699, cat:'kids', sub:'footwear', type:'clogs', rating:4.4, reviews:198, img:'https://images.openai.com/thumbnails/url/S0Src3icDcnbEoFAGADgJ0oqdJgxhqbzYRSD7S4b-Y22tf1l9FDex9vw3X7fzw2Rd5YsXxgVb46XSsIz0yZ1hyUCndC2kbtbyzmwevVc_s9ap5Xp0UzxIY0O0jHOeoOTmORiwTXPbkvFF7WrwHX3mqkVBIHbjMNLlDkZ9RxSeNydZK1GESPhJp4z8JK7r4mdNGztU0akMSywCKboGHojNv4-orrN3aCHlpvo_gDwnz0-', desc:'Slip-on clog sandals with lightweight foam sole. Easy and comfy.', sizes:['20','22','24','26','28','30']},
+
+{id:88, name:'Ethnic Kolhapuri', price:349, orig:499, cat:'kids', sub:'footwear', type:'ethnic', rating:4.5, reviews:112, img:'https://images.openai.com/thumbnails/url/R8sP93icDclZDoIwEADQExVwwYCJMYJCowGNgkZ_jJSlJVgGOip4LG_jbfT9vu-HI4Ka6nomWdsDZinBRA60QuENBdNYfdcVrwGELObN7H_TRZjaPou8OiIGG7VuRdbbywNGDjO7g-nR6-RRktfbCGm8Oatb17vLqkXZc99OgUIMi0qUDQWy54ET1oHo3lwWzLH5XnLLH46jxBInmmdutEvQWsVPU12OmHHm5KTpwx8ycUAs', desc:'Traditional Kolhapuri sandals for kids. Perfect for ethnic occasions.', sizes:['20','22','24','26','28']},
+
+{id:89, name:'High-Top Sneakers', price:799, orig:1199, cat:'kids', sub:'footwear', type:'sneakers', rating:4.6, reviews:178, img:'https://images.openai.com/thumbnails/url/Jzxz7nicDcltEkJAAADQE8VkEWaaBhmSlI9S_jTZldWstbGMOklX6zb1_r7vB3POekMUSwq7F-MlmvGCAqHq-Y3XUIBtI_a4Zaym1eq5_J9hhkh3YWJvurmmSRnzOc6nHCcq6EiKInYGazkc5eP2OoxlobuZR7g03Z3LTjm8g5wqgapRde8PTh0zW0MPhTTOQCwbTKYXWUQ5LdI4-gHwLjWB', desc:'Stylish high-top sneakers with durable sole. Great for older kids.', sizes:['28','30','32','34','36']},
+
+{id:90, name:'Warm Winter Boots', price:999, orig:1499, cat:'kids', sub:'footwear', type:'boots', rating:4.8, reviews:134, img:'https://images.openai.com/thumbnails/url/DwS-7XicDcn_EoEwAADgJ6JSHN05ZztiKpnbVX85W78wa7VRPJT38TZ8_37fT6W1VK5h5IK1L6nzbKCpGA1Lpc_6woasvhuqqqW8iHLRzP_nLsNs5jHMn0ShUD4mh9H2ipsNgIzY_PBeZ8nOnmIN7RWt43vCfaydMee02XVmVGar4z4-dUAKn4OBRazinTuxvVfp6xYE3gxBs6QNafsCdc-qF9iKIGqXjxT4MAp_Lu8-IQ', desc:'Cozy winter boots with fleece lining. Keeps feet warm and dry.', sizes:['22','24','26','28','30']},
+  // HOME - CLOCKS (8)
+ // HOME - CLOCKS (Refined)
+
+{id:91, name:'Nordic Wall Clock', price:1299, orig:1999, cat:'home', sub:'clock', type:'wall', rating:4.8, reviews:234, img:'https://images.openai.com/static-rsc-4/8TAkM-TKvFCsUUShnsJg21KUhfh4M6z5T8gX9dhUJ-kuFmjGukiCBnax3K5CR9Q86zoCFObVo1E30NKV5AK10HckMz8rOYO3KoFhu2PB-luP6VxMRuWuVLTOLyPBT9Allh27eYm-TcbXh_LXngaLdIriM20q-65qeuWD_nEDP2I?purpose=inline', desc:'Minimalist Nordic-style wall clock in birch wood. Silent sweep movement.', sizes:['30cm','40cm']},
+
+{id:92, name:'Vintage Cuckoo Clock', price:2999, orig:4499, cat:'home', sub:'clock', type:'cuckoo', rating:4.6, reviews:89, img:'https://images.openai.com/thumbnails/url/Tk2gO3icDclZCoJAGADgE6WSCI0QYSKaRi655UvouC_jpP8odpuO1W3qe_2-nxqAzjLPFwRPG4Ui30FGBK6aIYUGc3gc-LkeKW1IdXod_ycrtxzp2BP6i5v3imea-yk1rIT5AYR69tDCIGZC5uoRsiWCxrUTgjucWZWgJd2ei-6Ii41rFaiYbCUwWI3MsSYc0YOK_OsQl63otoWj9aknoXf3AybYOmw', desc:'Traditional cuckoo clock with hand-carved wooden design and pendulum.', sizes:['Free']},
+
+{id:93, name:'Digital LED Clock', price:899, orig:1399, cat:'home', sub:'clock', type:'digital', rating:4.5, reviews:312, img:'https://images.openai.com/thumbnails/url/8DPcM3icDcnhEoEwAADgJ0pIWHfOVS7DQuR0_enadFllLZtansrreBu-v9_3c5eSC0vXM0aePZfZTZOYGYNcyFRSMiD1Qxf3mnPK8mWz-J9l729gTQJVHQskRHTujGEVOyZGFD2EK5J5U7LQjWL42nYJBUr5XnMI7S6dADts6WVnOr5G2qRxc1wU0GHgmhnVrAdmEiAFuTrZVbvBjluieDYdQ_ie7_hoSwNvhcv8B-jJPuw', desc:'Modern LED digital clock with alarm, date and temperature display.', sizes:['Free']},
+
+{id:94, name:'Brass Mantle Clock', price:1999, orig:2999, cat:'home', sub:'clock', type:'table', rating:4.7, reviews:112, img:'https://images.openai.com/thumbnails/url/HlEdbXicDcltDoIgAADQE6WSrcytNWupmdNWRumfhkhoGaCgfRyq-3Sben_f91MqJaSt64Th9iUUKQYqZ6ZGpUKqwhrmd12WXIiK0Xkz-5_tRMXUw3tfkcPqyBsDHFkG_QczM5osrrJtelIEvdX2bmQlnYuGeCdF5Kb1eOQYKD2sTwCurK3ZR08Q8JeZAS9fcsxvZ1ahEIYX-tjsAQ3AJLbyJO0gq99VvCbSm6ofSK0-cQ', desc:'Elegant brass mantle clock with Roman numerals and glass dome.', sizes:['Free']},
+
+{id:95, name:'Geometric Wall Clock', price:799, orig:1199, cat:'home', sub:'clock', type:'wall', rating:4.6, reviews:178, img:'https://images.openai.com/thumbnails/url/iF2yj3icDcltCoIwAADQE6WYE1SIWKKyaoGfSX9C55omblNn2nE6Vrep9_d9P41ScnJ1nXIyvqWi9UZVfKuxSZWqJRoRvT41QsqWs_2w-58LL7UTkmjpnoFFmJHTqluRc-XxUBGCW2CxFAYzim5gzaXHMoGXmPsJyKgoS6M_pyAc5pfHIppEYYeOcLUfhYn6lN99WcipAwdxgjjAeWDi0f4BQF05zA', desc:'Modern geometric wall clock with metal frame. Matte black finish.', sizes:['35cm','45cm']},
+
+{id:96, name:'Alarm Table Clock', price:499, orig:799, cat:'home', sub:'clock', type:'alarm', rating:4.4, reviews:267, img:'https://images.openai.com/thumbnails/url/hCsvqnicDcndCoIwGADQJ1Kb-Q8Rw1S0poJBtTudaxrlZt9AfJweq7epc3u-n0FrBZFl8Ym9V6V5b-huQqYA3eqRmUy-LBikUuMk9vPufxEu-zBjjVN0YedhlS4ul3BiFd6ECKp6vdoJMCyQmw6PbKKat2XuNduGsKDsLwdvtGcEPQ-KWMguIfm9IED58-wwQy7Hm-dToHYa16nhS0eQH7rzN70', desc:'Classic alarm clock with loud bell and snooze feature.', sizes:['Free']},
+
+{id:97, name:'Pendulum Clock', price:3499, orig:4999, cat:'home', sub:'clock', type:'pendulum', rating:4.9, reviews:67, img:'https://images.openai.com/thumbnails/url/bZXzJHicDclJDoIwAADAF5UlgWpJjIEYNi0SMQWPthBAgRZaF3iOv_I3Otf5fhqlhHR0vRrYNAtVlUDRwdRqqa6qZRrjvS4bLkQ71Ntx8z_HTUoUsBMVgL2zxSI7n1hJdHvy2nrFfKHWIzkioADpsHuZp_FAcwPT1pZT7jXnMu1GiEQBwhWjMM3QmWDTN_t9bMjYr-07DOTaL3BpRyHyoDK6Hz0bOG8', desc:'Grand pendulum clock with hourly chime. Traditional wooden finish.', sizes:['Free']},
+
+{id:98, name:'Neon LED Clock', price:1199, orig:1799, cat:'home', sub:'clock', type:'led', rating:4.5, reviews:145, img:'https://images.openai.com/thumbnails/url/vPA-iXicDcnbEkJAAADQL1q020hmmqYhQplFg7wYrFzKLu02XT6nv-pv6rye76cVYuS6LNe0ur1GURMgSgqlhotCdJVUsUHmLRvHjjbrafU_feOTpV2FgmjGwAvAe2DvDvAYJfu5GWhYeNTpT_hhLtRrWPbmuY7oPWdvdlGyFCHFenrtVAYGytC2TibsuDh1STzBGbMATXMrNuwEZqEKAfFZ7PQ_HXs4iA', desc:'Stylish neon LED wall clock with RGB lighting modes. USB powered.', sizes:['30cm','40cm']},
+  // HOME - PHOTO FRAMES (8)
+ // HOME - PHOTO FRAMES (Refined)
+
+{id:99, name:'Rustic Wooden Frame', price:399, orig:599, cat:'home', sub:'frame', type:'wooden', rating:4.7, reviews:312, img:'https://images.openai.com/thumbnails/url/ewRvmnicDclXDoIwAADQE7FkGE2MAQSCIlaIA39MLRukBco8lrfxNvp-3_eTUkraNcdFFWomQqOQoa9KZJOWQpohFuE316aYkKxKtvXmf2vVDVcW8kO3m-Oh77tDdEOywzNombuYH0XZM_LxlERe9jCfVkqkPRqcGfMauAsM1j05GGsflCWARuGH4uA48whjMwOCfcaXUp1c_erThbmDUgA1xSJ6IUsehTYQFnNzVH5Xgz82', desc:'Natural rustic wooden photo frame. Suitable for tabletop or wall display.', sizes:['5x7','8x10']},
+
+{id:100, name:'Multi-Collage Frame', price:699, orig:999, cat:'home', sub:'frame', type:'collage', rating:4.6, reviews:189, img:'https://images.openai.com/thumbnails/url/gR1WInicDclJDoIwAADAF7FGFE2MwSiLSzGCwXox0LJUtBTaWPodf-VvdK7z_TRCML4wjJKiQTFRYk0U1NJrLnJBkI66l8GbjjFC61W__N_CA3geoMQc1-mdBN4QKVKpx7gr4YRuvdCV_Rtfcye-7DnP5u_oMEmlg-PKD2Vq2y13Z5BpAIxdYh2RfSravitAtjHVeK6gRYWC2Jc3F4IpPQ0EPX9xODq1', desc:'Stylish collage frame for multiple photos. Perfect for memory walls.', sizes:['Free']},
+
+{id:101, name:'Floating Acrylic Frame', price:899, orig:1399, cat:'home', sub:'frame', type:'acrylic', rating:4.8, reviews:134, img:'https://images.openai.com/static-rsc-1/BSJzoq4H_cCXF6VCadICtZNPJ2XymBXCynRzarLSR1eKXbYW5cj-XQjEUralG59DJWu4kpVNK0ZBIAolVjHwt_7_kFPg215iPQJIVjQDVXerzWNVD3V8SndJ8-fSQSw2pwK9eWOmuT2v0dToXtoRlNisDQWAyNdeCw5zZlwKMN8IMvtNhEeBuLHgWJeLJc2iIL2_iAb4BmGQjPSkuL7aCMIli25dxoidyftw1ldr-r4', desc:'Modern floating acrylic frame with crystal-clear finish. Minimalist design.', sizes:['4x6','5x7','8x10']},
+
+{id:102, name:'Gold Ornate Frame', price:1199, orig:1799, cat:'home', sub:'frame', type:'decorative', rating:4.5, reviews:89, img:'https://images.openai.com/thumbnails/url/D3u6tHicDclJDoIwAADAFwkUMSyJMSQqcWlZIrjcbAsFgVKgIHzK__gbnet8P7mUondUNeWkm4VM6UJiriusl09ZEIU0tdrnjRAFZ5t2_T_HRdT2yKWpxo6JCUer942lB5LNe_NCw1nTsuK5rYMS-ojyMHhoKB2s172s7eQW4dbGyyH2TiYC3AghTXSx3J1jN4bJ4BHTxNA_gavtAsDByhjrcqqsHc6OXT56b_QDWP49sQ', desc:'Vintage gold ornate frame with intricate detailing. Classic decor piece.', sizes:['5x7','8x10']},
+
+{id:103, name:'Magnetic Fridge Frame', price:199, orig:299, cat:'home', sub:'frame', type:'magnetic', rating:4.4, reviews:456, img:'https://images.openai.com/thumbnails/url/UUheqXicDcltCoIwAADQE00RQlSIUAxnrLLS1F-h87Pm3NpkzIN0t25T7-_7fgYpmfBMs6X4rZlsGyBrahm9kJUcsYHnyRTDzNhI-x3f_s_zT40b4fR5VmFixV2mB-JwwR6KADeHOEIl5ZkCa3zRJZ-7e1gclbbVFNwmBBcB16V4KSChtfhIkMBu936dVOnaoc3VqXnj5gfxA_tHNzg', desc:'Flexible magnetic frames for fridge use. Lightweight and easy to swap photos.', sizes:['4x6']},
+
+{id:104, name:'Rope Hanging Frames', price:599, orig:899, cat:'home', sub:'frame', type:'hanging', rating:4.6, reviews:223, img:'https://images.openai.com/static-rsc-1/zOjN8hq4mJKYbw4oOC5bucYimklLT_UWf88BiP9rskhppk4W5nn5SVw7D5TT-HAC0NCzOvRLZXcNfZfWYIWTBHgGtaAAqdJQEsPjnSZeOnq1t957A5l3k-Gt-iM2brNXYEGzEZeFKOVFxDOBK2wvsEZUZi0V3fLezNxJxhJ-j8ahBO5pnsv1J--0kRPOuNMJY4qPINqY0kqlfl3EKzAb8bzI4teDix2o1GuBpvYA-tm2AVI0dlmkUx9Pw0954GSqDINKuv5PN9ITj_pw89KBFg', desc:'Boho-style rope hanging frame with wooden clips. Great for wall decor.', sizes:['4x6']},
+
+{id:105, name:'Digital Photo Frame', price:2999, orig:4499, cat:'home', sub:'frame', type:'digital', rating:4.7, reviews:145, img:'https://images.openai.com/static-rsc-1/L9nR1gj00MfdIYLWF4ZpuhfB9UlaqFvepI3rDS5G-51xWkM7dpFe6vjiZGnwEZHFolQpzHRadW1qlRwdybv_HDgarVbFq1enZyCACPqyPRE9lVUvUiRLoDjAXn7bwKzecnWaAG4o22Cm0WDlHlW_Q_6YQ44Bv3wYGkVq8Gnt6iP4tzsncky6m6L1DMtxWfPw8gAG04X5lvsaW5CcDYPdqKwQUTxUuL6I68r0aBA_WHc', desc:'Smart digital frame with WiFi and 16GB storage. Auto-rotating display.', sizes:['Free']},
+
+{id:106, name:'Marble Effect Frame', price:799, orig:1199, cat:'home', sub:'frame', type:'designer', rating:4.5, reviews:112, img:'https://images.openai.com/static-rsc-1/r3K7nO0bNcAM6X8oAhAU9oXNp-1g7pLHhQ8q_R62ir8Ah7X2gsZL8iqhQei_7L7e6ZcShaBlh8qpDSMOn2s-YfIukA23yANDMxPXw8IBDqn0wML8x-0ns-RMaCnRMPnJ_NYw3t--yHzRKYzGlpdfX8wTpJlv-DoKg68fFkAuUiXV4Jdydgz6RDOhxMVNQrqINZzwlsi8LjsL1472rrTemtjkXF-Hy-EfNvdD8bgkKVTOSvSnM1CULqxBfAJRF2ec', desc:'Stylish marble-effect frame with gold accents. Elegant home decor.', sizes:['5x7','8x10']},
+  // HOME - FLOWER VASES (7)
+  // HOME - VASES (Refined)
+
+{id:107, name:'Ceramic Bud Vase', price:499, orig:799, cat:'home', sub:'vase', type:'ceramic', rating:4.7, reviews:267, img:'https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Minimal ceramic bud vase in matte white. Perfect for single stems and small spaces.', sizes:['Small','Medium']},
+
+{id:108, name:'Glass Cylinder Vase', price:699, orig:999, cat:'home', sub:'vase', type:'glass', rating:4.6, reviews:189, img:'https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Clear glass cylinder vase ideal for tall floral arrangements and centerpieces.', sizes:['20cm','30cm','40cm']},
+
+{id:109, name:'Terracotta Vase Set', price:899, orig:1299, cat:'home', sub:'vase', type:'terracotta', rating:4.8, reviews:134, img:'https://images.pexels.com/photos/4207785/pexels-photo-4207785.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Set of 3 handcrafted terracotta vases. Natural earthy tones for rustic decor.', sizes:['Free']},
+
+{id:110, name:'Blue Pottery Vase', price:1299, orig:1999, cat:'home', sub:'vase', type:'ceramic', rating:4.9, reviews:78, img:'https://images.pexels.com/photos/4207892/pexels-photo-4207892.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Traditional Jaipur blue pottery vase with intricate floral patterns.', sizes:['Small','Large']},
+
+{id:111, name:'Metallic Hammered Vase', price:1499, orig:2299, cat:'home', sub:'vase', type:'metal', rating:4.6, reviews:112, img:'https://images.openai.com/thumbnails/url/7hmn2XicDcltDoIgAADQE5kf1ZZtrRHNNFPXNMc_pqBiKViQFqfqOt2m3t_3_TClBrk2zYqTx3tQFTVUyZ1ZI1WhWjIjojclE8PQ8mZ73_xvDWLqHkhKXXZORnIK0uNYo70IfZkB63W3ksA9QLZASmsbT5FHr74MUQySub6gh25tJGInSDhe9YWxwA2slzuubw5_-VEEu5JecAiwB6fM6J76DLCVs3GyyZjlaTX9AKdIPxY', desc:'Hammered metallic vase with copper finish. Adds a bold statement to decor.', sizes:['Small','Large']},
+
+{id:112, name:'Hanging Test Tube Vase', price:799, orig:1199, cat:'home', sub:'vase', type:'hanging', rating:4.5, reviews:89, img:'https://images.pexels.com/photos/6207943/pexels-photo-6207943.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Wall-mounted test tube vase with wooden frame. Perfect for modern interiors.', sizes:['Free']},
+
+{id:113, name:'Wicker Basket Vase', price:599, orig:899, cat:'home', sub:'vase', type:'woven', rating:4.4, reviews:145, img:'https://images.pexels.com/photos/4207790/pexels-photo-4207790.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Boho-style wicker vase ideal for dried flowers and rustic themes.', sizes:['Small','Large']},
+  // HOME - fill to 30
+  // HOME - DECOR (Updated with unique images)
+{id:114, name:'Scented Candle Set', price:799, orig:1199, cat:'home', sub:'decor', rating:4.7, reviews:367, img:'https://images.openai.com/thumbnails/url/Kvd_JnicDclJDoIwFADQE8nQKFNiDNCIIzQhRnaktAQQKcVfQTyJV_M2-rbv-6mVkuDpeinYY5aq5AtVCKRVoKhqmMb6Toe6l7IR1WZY_8_zY-5GLDX99D69eHJD1jaYAxql04xPzzEDBBAO4b6NR5JfStgJnti5ybP31RrR5exK0hWOvTqUJjkaKsPOhCnBKjKgXRJHig7oUP0AI0s2pw', desc:'Set of 6 premium scented candles. Lavender, vanilla, rose and more.', sizes:['Free']},
+
+{id:115, name:'Wall Art Print', price:999, orig:1499, cat:'home', sub:'decor', rating:4.6, reviews:198, img:'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Modern abstract wall art print. UV-resistant ink on premium paper.', sizes:['A3','A2','A1']},
+
+{id:116, name:'Macrame Wall Hanging', price:1199, orig:1799, cat:'home', sub:'decor', rating:4.8, reviews:156, img:'https://images.pexels.com/photos/6207943/pexels-photo-6207943.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Handwoven macrame wall hanging. Boho decor with driftwood hanger.', sizes:['Small','Large']},
+
+{id:117, name:'Decorative Lantern', price:849, orig:1299, cat:'home', sub:'decor', rating:4.5, reviews:234, img:'https://images.pexels.com/photos/1123262/pexels-photo-1123262.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Moroccan-style metal lantern with glass panels. For indoor and outdoor.', sizes:['Small','Large']},
+
+{id:118, name:'Cushion Cover Set', price:599, orig:899, cat:'home', sub:'decor', rating:4.6, reviews:312, img:'https://images.pexels.com/photos/276528/pexels-photo-276528.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Set of 5 cushion covers in geometric print. 16x16 inch size.', sizes:['16x16','18x18']},
+
+{id:119, name:'Ceramic Planter Set', price:999, orig:1499, cat:'home', sub:'decor', rating:4.7, reviews:178, img:'https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Set of 3 ceramic planters in ombre glaze finish. Drainage hole included.', sizes:['Free']},
+
+{id:120, name:'Bamboo Table Organiser', price:699, orig:999, cat:'home', sub:'decor', rating:4.4, reviews:223, img:'https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&w=400&h=400&fit=crop', desc:'Eco-friendly bamboo desk organiser with 6 compartments. Great for WFH.', sizes:['Free']},
+];
+
+// App State
+let orders = [];
+let wishlist = new Set();
+let cart = [];
+let currentUser = '';
+let currentFilter = 'all';
+let currentProduct = null;
+let paymentMethod = 'online';
+
+const reviews = [
+  {name:'Priya S.',rating:5,text:'Absolutely love this! Quality is top notch and arrived in perfect condition.',date:'2 days ago'},
+  {name:'Rohan K.',rating:4,text:'Great product, fast delivery. Exactly as described. Highly recommend!',date:'4 days ago'},
+  {name:'Anita M.',rating:5,text:'Exceeded my expectations. Will definitely buy again!',date:'1 week ago'},
+  {name:'Vikram R.',rating:4,text:'Good quality for the price. Packaging was secure.',date:'10 days ago'},
+  {name:'Sneha P.',rating:5,text:'Perfect gift! Recipient was very happy. Beautiful product.',date:'2 weeks ago'},
+  {name:'Arjun N.',rating:4,text:'Nice product. Fits well and looks great.',date:'3 weeks ago'},
+];
+
+// Carousel
+let cAngle = 0;
+setInterval(()=>{cAngle+=90;document.getElementById('scInner').style.transform='rotateY('+cAngle+'deg)';},2800);
+
+function showLogin(){document.getElementById('splash').style.display='none';document.getElementById('loginPage').style.display='flex';}
+
+function doLogin(){
+  const u=document.getElementById('uname').value.trim(),p=document.getElementById('upass').value.trim();
+  if(!u||!p){document.getElementById('loginErr').style.display='block';return;}
+  document.getElementById('loginErr').style.display='none';
+  currentUser=u;
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('profAv').textContent=u.charAt(0).toUpperCase();
+  document.getElementById('profName').textContent=u;
+  document.getElementById('profAcc').textContent=/^\d+$/.test(u)?'+91 '+u:u+'@shopella.in';
+  renderHome();toast('👋 Welcome, '+u+'!');
+}
+
+function logout(){
+  orders=[];wishlist.clear();cart=[];currentUser='';
+  document.getElementById('app').style.display='none';document.getElementById('splash').style.display='flex';
+  document.getElementById('uname').value='';document.getElementById('upass').value='';
+  currentFilter='all';showPage('pageHome',0);toast('Logged out!');
+}
+
+function showPage(id,idx){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('nav'+idx).classList.add('active');
+  if(id==='pageOrders')renderOrders();
+  if(id==='pageWish')renderWishlist();
+  if(id==='pageProfile')renderProfile();
+}
+
+function filterCat(cat,el){
+  currentFilter=cat;
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderHome();
+}
+
+function renderHome(){
+  const q=(document.getElementById('searchInput')||{value:''}).value.toLowerCase();
+  let prods=allProducts;
+  if(currentFilter!=='all')prods=prods.filter(p=>p.cat===currentFilter);
+  if(q)prods=prods.filter(p=>p.name.toLowerCase().includes(q)||p.sub.includes(q));
+  document.getElementById('homeGrid').innerHTML=prods.length?prods.map(prodCard).join(''):'<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--sub)">No products found</div>';
+}
+
+function searchProds(){renderHome();}
+
+function prodCard(p){
+  const liked=wishlist.has(p.id);
+  const disc=Math.round((1-p.price/p.orig)*100);
+  return `<div class="prod-card" onclick="showDetail(${p.id})">
+    <button class="heart-btn${liked?' liked':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">${liked?'♥':'♡'}</button>
+    <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="prod-img-fallback" style="display:none">${p.sub==='women'?'👗':p.sub==='men'?'👔':p.sub==='kids'?'👶':'🏠'}</div>
+    <div class="prod-info">
+      <div class="prod-name">${p.name}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="prod-price">₹${p.price.toLocaleString('en-IN')}</div>
+        <div class="prod-orig">₹${p.orig.toLocaleString('en-IN')}</div>
+        <span style="background:var(--teal);color:#fff;font-size:0.65rem;font-weight:700;padding:2px 6px;border-radius:10px">${disc}%</span>
+      </div>
+      <div class="prod-rating"><span class="stars">${stars(p.rating)}</span><span>${p.rating} (${p.reviews})</span></div>
+    </div>
+  </div>`;
+}
+
+function stars(r){
+  let s='';for(let i=1;i<=5;i++)s+=i<=Math.floor(r)?'★':(i-0.5<=r?'⭐':'☆');return s;
+}
+
+function toggleWish(id,el){
+  if(wishlist.has(id)){wishlist.delete(id);el.classList.remove('liked');el.textContent='♡';toast('Removed from wishlist')}
+  else{wishlist.add(id);el.classList.add('liked');el.textContent='♥';toast('❤️ Added to wishlist!')}
+  updateBadges();
+}
+
+function updateBadges(){
+  const wb=document.getElementById('wishBadge'),ob=document.getElementById('orderBadge');
+  wb.style.display=wishlist.size?'flex':'none';wb.textContent=wishlist.size;
+  ob.style.display=orders.length?'flex':'none';ob.textContent=orders.length;
+  const stO=document.getElementById('stOrders'),stW=document.getElementById('stWish');
+  if(stO)stO.textContent=orders.length;if(stW)stW.textContent=wishlist.size;
+}
+
+// ===== DETAIL PAGE =====
+function showDetail(id){
+  const p=allProducts.find(x=>x.id===id);if(!p)return;
+  currentProduct=p;
+  document.getElementById('detailHeaderName').textContent=p.name;
+  const disc=Math.round((1-p.price/p.orig)*100);
+  const liked=wishlist.has(p.id);
+  const sim=allProducts.filter(x=>x.cat===p.cat&&x.id!==p.id).sort(()=>Math.random()-.5).slice(0,8);
+  const revs=reviews.sort(()=>Math.random()-.5).slice(0,4);
+  const sizeHtml=p.sizes&&p.sizes.length>0?`<div class="size-section">
+    <div class="size-label">Select Size</div>
+    <div class="size-opts">${p.sizes.map((s,i)=>`<button class="size-btn${i===0?' sel':''}" onclick="selSize(this)">${s}</button>`).join('')}</div>
+  </div>`:'';
+  document.getElementById('detailBody').innerHTML=`
+    <div class="detail-img-wrap">
+      <img src="${p.img}" alt="${p.name}">
+      <button class="detail-heart${liked?' liked':''}" id="dheart" onclick="toggleWishDetail(${p.id})">${liked?'♥':'♡'}</button>
+    </div>
+    <div class="detail-info">
+      <div class="detail-name">${p.name}</div>
+      <div class="detail-stars"><span class="s">${stars(p.rating)}</span><span class="rc">${p.rating} · ${p.reviews} reviews</span></div>
+      <div class="detail-price-row">
+        <div class="detail-price">₹${p.price.toLocaleString('en-IN')}</div>
+        <div class="detail-orig">₹${p.orig.toLocaleString('en-IN')}</div>
+        <div class="detail-disc">${disc}% OFF</div>
+      </div>
+      <div class="detail-desc">${p.desc}</div>
+      ${sizeHtml}
+      <div class="qty-row">
+        <div class="qty-label">Quantity:</div>
+        <div class="qty-ctrl">
+          <button onclick="qtyChange(-1)">−</button>
+          <span id="qtyVal">1</span>
+          <button onclick="qtyChange(1)">+</button>
+        </div>
+      </div>
+      <div class="action-btns">
+        <button class="btn-cart" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
+        <button class="btn-buy" onclick="openPayModal(${p.id})">⚡ Buy Now</button>
+      </div>
+      <div style="margin-top:16px;background:var(--bg);border-radius:14px;padding:14px;font-size:0.82rem;color:var(--sub);display:flex;gap:20px;flex-wrap:wrap">
+        <span>🚚 Free delivery above ₹499</span>
+        <span>↩️ 7-day returns</span>
+        <span>✅ Genuine product</span>
+      </div>
+    </div>
+    <div class="reviews-block">
+      <h4>Customer Reviews</h4>
+      ${revs.map(r=>`<div class="rev-item">
+        <div class="rev-av">${r.name.charAt(0)}</div>
+        <div style="flex:1">
+          <div class="rev-name">${r.name}</div>
+          <div class="rev-stars">${stars(r.rating)}</div>
+          <div class="rev-txt">${r.text}</div>
+          <div class="rev-date">${r.date}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    ${sim.length?`<div class="similar-block">
+      <h4>You May Also Like</h4>
+      <div class="sim-grid">${sim.map(s=>`<div class="sim-card" onclick="showDetail(${s.id})">
+        <img src="${s.img}" alt="${s.name}" loading="lazy">
+        <div class="sn">${s.name}</div>
+        <div class="sp">₹${s.price.toLocaleString('en-IN')}</div>
+      </div>`).join('')}
+      </div>
+    </div>`:''}
+  `;
+  document.getElementById('pageDetail').style.display='block';
+  window.scrollTo(0,0);
+  document.getElementById('app').style.display='none';
+}
+
+function closeDetail(){
+  document.getElementById('pageDetail').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderHome();
+}
+
+function selSize(el){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+
+function qtyChange(d){
+  const el=document.getElementById('qtyVal');
+  let v=parseInt(el.textContent)+d;
+  if(v<1)v=1;if(v>10)v=10;el.textContent=v;
+}
+
+function toggleWishDetail(id){
+  const h=document.getElementById('dheart');
+  if(wishlist.has(id)){wishlist.delete(id);h.classList.remove('liked');h.textContent='♡';toast('Removed from wishlist')}
+  else{wishlist.add(id);h.classList.add('liked');h.textContent='♥';toast('❤️ Added to wishlist!')}
+  updateBadges();
+}
+
+function addToCart(id){const p=allProducts.find(x=>x.id===id);if(p){cart.push(p);toast('🛒 Added to cart!');}}
+
+// ===== PAYMENT =====
+function openPayModal(id){
+  const p=allProducts.find(x=>x.id===id);if(!p)return;
+  currentProduct=p;
+  const qty=parseInt((document.getElementById('qtyVal')||{textContent:'1'}).textContent)||1;
+  document.getElementById('pmProdRow').innerHTML=`<img src="${p.img}" alt="${p.name}" onerror="this.style.background='#f0ecff'"><div><div class="pm-prod-name">${p.name}</div><div style="color:var(--sub);font-size:0.8rem;margin-top:2px">Qty: ${qty}</div><div class="pm-prod-price">₹${(p.price*qty).toLocaleString('en-IN')}</div></div>`;
+  document.getElementById('pmTotal').textContent='₹'+(p.price*qty).toLocaleString('en-IN');
+  document.getElementById('pmName').value=currentUser;
+  paymentMethod='online';
+  document.getElementById('pmOnline').classList.add('sel');
+  document.getElementById('pmCOD').classList.remove('sel');
+  document.getElementById('payModal').classList.add('open');
+}
+
+function closePayModal(){document.getElementById('payModal').classList.remove('open');}
+
+function selectPM(m){
+  paymentMethod=m;
+  document.getElementById('pmOnline').classList.toggle('sel',m==='online');
+  document.getElementById('pmCOD').classList.toggle('sel',m==='cod');
+}
+
+function confirmOrder(){
+  const p=currentProduct;if(!p)return;
+  const name=document.getElementById('pmName').value.trim(),addr=document.getElementById('pmAddr').value.trim(),city=document.getElementById('pmCity').value.trim();
+  if(!name||!addr||!city){toast('Please fill delivery details');return;}
+  const qty=parseInt((document.getElementById('qtyVal')||{textContent:'1'}).textContent)||1;
+  const del=new Date(Date.now()+(3+Math.floor(Math.random()*4))*86400000);
+  const trackSteps=[
+    {name:'Order Placed',time:new Date().toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'}),done:true},
+    {name:'Order Shipped',time:new Date(Date.now()+86400000).toLocaleDateString('en-IN'),done:true},
+    {name:'Reached Delhi Hub',time:new Date(Date.now()+2*86400000).toLocaleDateString('en-IN'),done:Math.random()>0.4},
+    {name:'Reached Chennai Hub',time:new Date(Date.now()+3*86400000).toLocaleDateString('en-IN'),done:false},
+    {name:'Out for Delivery',time:del.toLocaleDateString('en-IN'),done:false},
+    {name:'Delivered',time:del.toLocaleDateString('en-IN'),done:false}
+  ];
+  orders.unshift({...p,oid:Date.now(),qty,delivery:del.toLocaleDateString('en-IN'),payMethod:paymentMethod,address:addr+', '+city,trackSteps,status:trackSteps.filter(s=>s.done).length>=3?'Shipped':'Processing'});
+  closePayModal();updateBadges();
+  document.getElementById('successMsg').textContent=`Your ${p.name} order has been placed! Expected delivery by ${del.toLocaleDateString('en-IN')}. ${paymentMethod==='cod'?'Pay cash on delivery.':'Payment received.'}`;
+  document.getElementById('successModal').classList.add('open');
+}
+
+function closeSuccess(){
+  document.getElementById('successModal').classList.remove('open');
+  closeDetail();showPage('pageOrders',2);
+}
+
+// ===== ORDERS =====
+function renderOrders(){
+  const el=document.getElementById('orderList');
+  if(!orders.length){el.innerHTML='<div class="empty-state"><span class="ei">📦</span><h3>No orders yet</h3><p>Start shopping to see your orders here!</p></div>';return;}
+  el.innerHTML=orders.map(o=>{
+    const doneCount=o.trackSteps.filter(s=>s.done).length;
+    const currentIdx=doneCount<o.trackSteps.length?doneCount:-1;
+    return `<div class="order-card">
+      <div class="order-top">
+        <img src="${o.img}" alt="${o.name}" onerror="this.style.background='#f0ecff'">
+        <div class="order-det">
+          <h4>${o.name}</h4>
+          <div class="op">₹${(o.price*o.qty).toLocaleString('en-IN')}</div>
+          <div class="od">📅 Expected: ${o.delivery} · Qty: ${o.qty}</div>
+          <div class="od">📍 ${o.address}</div>
+          <div class="od">${o.payMethod==='cod'?'💵 Cash on Delivery':'💳 Online Payment'}</div>
+          <span class="order-status-badge status-${o.status.toLowerCase().replace(/\s/g,'')}">${o.status}</span>
+        </div>
+        <button class="cancel-btn" onclick="cancelOrder(${o.oid})">Cancel</button>
+      </div>
+      <div class="order-tracking">
+        <div style="font-weight:700;font-size:0.82rem;color:var(--dark);margin-bottom:10px;letter-spacing:0.5px;text-transform:uppercase">Order Tracking</div>
+        <div class="track-line">
+          ${o.trackSteps.map((s,i)=>`<div class="track-step">
+            <div class="ts-dot ${s.done?'done':(i===currentIdx?'current':'')}"></div>
+            <div>
+              <div class="ts-name" style="color:${s.done?'var(--teal)':(i===currentIdx?'var(--pink)':'var(--sub)')}">${s.name}</div>
+              <div class="ts-time">${s.time}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function cancelOrder(oid){orders=orders.filter(o=>o.oid!==oid);renderOrders();updateBadges();toast('❌ Order cancelled');}
+
+// ===== WISHLIST =====
+function renderWishlist(){
+  const items=allProducts.filter(p=>wishlist.has(p.id));
+  document.getElementById('wishGrid').innerHTML=items.length?items.map(prodCard).join(''):'<div class="empty-state" style="grid-column:1/-1"><span class="ei">❤️</span><h3>Wishlist is empty</h3><p>Tap the heart icon on any product to save it!</p></div>';
+}
+
+// ===== PROFILE =====
+function renderProfile(){
+  const spent=orders.reduce((s,o)=>s+o.price*(o.qty||1),0);
+  document.getElementById('stOrders').textContent=orders.length;
+  document.getElementById('stWish').textContent=wishlist.size;
+  document.getElementById('stSpent').textContent='₹'+spent.toLocaleString('en-IN');
+}
+
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// Close modals on backdrop click
+document.getElementById('payModal').addEventListener('click',function(e){if(e.target===this)closePayModal();});
+document.getElementById('successModal').addEventListener('click',function(e){if(e.target===this)closeSuccess();});
+</script>
+</body>
+</html>
